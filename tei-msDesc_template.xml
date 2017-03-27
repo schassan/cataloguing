@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-model href="schema/mss/cataloguing.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
-<TEI version="5.1" 
-     xmlns="http://www.tei-c.org/ns/1.0" 
-     xml:lang="de"
-     xml:id="{institution}_{collection}_{idno}_tei-msDesc_{author}">
+<TEI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.tei-c.org/ns/1.0 schema/mss/cataloguing.xsd"
+ xmlns="http://www.tei-c.org/ns/1.0" version="5.1" xml:lang="de"
+ xml:id="{institution}_{collection}_{idno}_tei-msDesc_{author}">
 	<teiHeader>
 		<fileDesc>
 			<titleStmt>
@@ -39,33 +38,36 @@
 					<!--<ptr type="purl" target="{url}"/>-->
 					<!--<ptr type="thumbnailForPresentations" target="{url}"/>-->
 				</pubPlace>
-				<idno></idno>
+				<idno type=""><!-- identification e.g., URN or GND number --></idno>
 			</publicationStmt>
 			<sourceDesc>
-				<p>Neu katalogisiert durch <name type="person">xy</name></p>
+				<p><!-- information on the source of the doc --></p>
 			</sourceDesc>
 		</fileDesc>
 		<encodingDesc>
 			<projectDesc>
-				<p>Beschreibung erstellt im Rahmen des Projektes <name type="project">Katalogisierung der abendländischen mittelalterlichen Handschriften der SUB Göttingen</name>.</p>
+				<p><!-- description written or published in the scope of a project? --><name type="project"></name>.</p>
 			</projectDesc>
 		</encodingDesc>
 		<profileDesc>
+			<!-- if the object is a letter add a profileDesc -->
+			<!--
 			<correspDesc>
 				<correspAction type="sent">
-					<persName ref="#Leisinger_Elisabeth">Elisabeth Leisinger</persName>
+					<persName ref="#someID"></persName>
 					<settlement>Berlin</settlement>
-					<date when="1887-11-14">14 Novbr. 1887</date>
+					<date when=""></date>
 				</correspAction>
 				<correspAction type="received">
-					<persName ref="#unknown">unbekannt</persName>
+					<persName ref="#someID"></persName>
 					<settlement></settlement>
 					<date></date>
 				</correspAction>
 			</correspDesc>
+			-->
 			<textClass>
-				<keywords scheme="#soreReferenceToScheme">
-					<term xml:lang="de"></term>
+				<keywords scheme="#someReferenceToScheme">
+					<term xml:lang="de"><!-- basic classification of the contents --></term>
 				</keywords>
 			</textClass>
 		</profileDesc>
@@ -73,7 +75,6 @@
 		<revisionDesc>
 			<change who="" when=""></change>
 		</revisionDesc>
-		-->
 	</teiHeader>
 	<text>
 		<body>
@@ -98,10 +99,10 @@
 					<origDate notBefore="" notAfter=""><!-- for datable mss --></origDate>
 				</head>
 				<msContents>
-					<textLang mainLang="2-digits" otherLangs=""><!-- cf. ISO 639-2 resp. -3 --></textLang>
+					<textLang mainLang="{2-digits}" otherLangs=""><!-- cf. ISO 639-2 resp. -3 --></textLang>
 					<msItem>
 						<locus from="" to=""></locus>
-						<author ref="someID"></author>
+						<author ref="#someID"></author>
 						<title></title>
 						<rubric xml:lang=""></rubric>
 						<incipit xml:lang=""></incipit>
@@ -115,7 +116,7 @@
 					<objectDesc form="codex">
 						<supportDesc material="perg">
 							<support>
-								<p><material>Pergament</material></p>
+								<p><material></material></p>
 								<p>Wasserzeichen: <watermark></watermark>: <bibl><abbr>Piccard-Online</abbr> <ref type="Piccard-Online" cRef=""></ref></bibl> ()</p>
 							</support>
 							<extent>
@@ -125,7 +126,7 @@
 									<width></width>
 									<depth></depth>
 								</dimensions>
-								<measure type="format"><!--2° oder fol.--></measure>
+								<measure type="format"><!-- e.g., 2° or fol.--></measure>
 							</extent>
 							<foliation></foliation>
 							<collation><formula></formula></collation>
@@ -146,26 +147,26 @@
 					</objectDesc>
 					<handDesc hands="">
 						<summary></summary>
-						<handNote scribe="" script="" medium="" scope="">
+						<handNote scribe="#someID" script="{scriptName}" medium="" scope="">
 							<p></p>
 						</handNote>
 					</handDesc>
 					<scriptDesc>
 						<summary></summary>
-						<scriptNote xml:id=""><p></p></scriptNote>
+						<scriptNote script="{scriptName}"><p></p></scriptNote>
 					</scriptDesc>
 					<musicNotation></musicNotation>
 					<decoDesc>
 						<summary></summary>
-						<decoNote type=""></decoNote>
+						<decoNote type="{someTypology}"></decoNote>
 					</decoDesc>
-					<additions></additions>
+					<additions><!-- for textual additions --></additions>
 					<bindingDesc>
 						<binding contemporary="" notBefore="" notAfter="">
 							<p></p>
 						</binding>
 					</bindingDesc>
-					<accMat type=""></accMat>
+					<accMat type=""><!-- for material additions except fragments --></accMat>
 				</physDesc>
 				<history>
 					<origin>
