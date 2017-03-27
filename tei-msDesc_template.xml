@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="schema/mss/cataloguing.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>
+<TEI version="5.1" 
+     xmlns="http://www.tei-c.org/ns/1.0" 
+     xml:lang="de"
+     xml:id="{institution}_{collection}_{idno}_tei-msDesc_{author}">
+	<teiHeader>
+		<fileDesc>
+			<titleStmt>
+				<title><!-- title of the object described or of the description provided --></title>
+				<respStmt>
+					<resp><!-- responsibility e.g., "Catalogued by" --></resp>
+					<name type="person"><!-- name of the cataloguer --></name>
+				</respStmt>
+			</titleStmt>
+			<editionStmt>
+				<edition>Elektronische Ausgabe nach TEI P5</edition>
+				<respStmt>
+					<resp><!-- description of the responsibility e.g., "TEI-conformant encoding by" --></resp>
+					<name type="person"><!-- name of the editor of this file --></name>
+					<name type="org"><!-- your institution --></name>
+				</respStmt>
+			</editionStmt>
+			<publicationStmt>
+				<publisher>
+					<name type="org"><!-- your institution --></name>
+					<ptr target="{homepage of your institution}"/>
+				</publisher>
+				<date when="20xx" type="issued"/>
+				<date when="20xx" type="digitised"/>
+				<distributor><!-- your institution --></distributor>
+				<availability status="restricted">
+					<licence target="{license URL, e.g. http://creativecommons.org/licenses/by-sa/3.0/}">
+						<p><!-- remarks on the license applied --></p>
+						<p><!-- further information on the licensing, e.g. <ref target="{url}">Copyright Information</ref> --></p>
+					</licence>
+				</availability>
+				<pubPlace>
+					<!--<ptr type="purl" target="{url}"/>-->
+					<!--<ptr type="thumbnailForPresentations" target="{url}"/>-->
+				</pubPlace>
+				<idno></idno>
+			</publicationStmt>
+			<sourceDesc>
+				<p>Neu katalogisiert durch <name type="person">xy</name></p>
+			</sourceDesc>
+		</fileDesc>
+		<encodingDesc>
+			<projectDesc>
+				<p>Beschreibung erstellt im Rahmen des Projektes <name type="project">Katalogisierung der abendländischen mittelalterlichen Handschriften der SUB Göttingen</name>.</p>
+			</projectDesc>
+		</encodingDesc>
+		<profileDesc>
+			<correspDesc>
+				<correspAction type="sent">
+					<persName ref="#Leisinger_Elisabeth">Elisabeth Leisinger</persName>
+					<settlement>Berlin</settlement>
+					<date when="1887-11-14">14 Novbr. 1887</date>
+				</correspAction>
+				<correspAction type="received">
+					<persName ref="#unknown">unbekannt</persName>
+					<settlement></settlement>
+					<date></date>
+				</correspAction>
+			</correspDesc>
+			<textClass>
+				<keywords scheme="#soreReferenceToScheme">
+					<term xml:lang="de"></term>
+				</keywords>
+			</textClass>
+		</profileDesc>
+		<!--
+		<revisionDesc>
+			<change who="" when=""></change>
+		</revisionDesc>
+		-->
+	</teiHeader>
+	<text>
+		<body>
+			<msDesc xml:id="{collection}_{idno}_tei-msDesc_{author}" xml:lang="de">
+				<msIdentifier>
+					<settlement><!-- your city --></settlement>
+					<repository rend="{shortForm}" ref="ISIL:{isil}"><!-- name if the institution --></repository>
+					<idno sortKey="some-sortKey"><!-- shelfmark of the object --></idno>
+					<!-- some catalog oder alternative writing of shelfmark -->
+					<altIdentifier type="alternative">
+						<collection><!-- name of the catalogue --></collection>
+						<idno sortKey="{catalog-0000}"><!-- catalogue number --></idno>
+					</altIdentifier>
+				</msIdentifier>
+				<head>
+					<title></title>
+					<!-- if place of origin is known specifically, @ref should be supplied -->
+					<origPlace ref="someID"></origPlace>
+					<!-- the following options to supply a date of origin are mutual exclusive -->
+					<origDate when=""><!-- for dated mss, exact date --></origDate>
+					<origDate from="" to=""><!-- for dated mss, a certain period --></origDate>
+					<origDate notBefore="" notAfter=""><!-- for datable mss --></origDate>
+				</head>
+				<msContents>
+					<textLang mainLang="2-digits" otherLangs=""><!-- cf. ISO 639-2 resp. -3 --></textLang>
+					<msItem>
+						<locus from="" to=""></locus>
+						<author ref="someID"></author>
+						<title></title>
+						<rubric xml:lang=""></rubric>
+						<incipit xml:lang=""></incipit>
+						<explicit xml:lang=""></explicit>
+						<finalRubric xml:lang=""></finalRubric>
+						<colophon xml:lang=""></colophon>
+					</msItem>
+				</msContents>
+				
+				<physDesc>
+					<objectDesc form="codex">
+						<supportDesc material="perg">
+							<support>
+								<p><material>Pergament</material></p>
+								<p>Wasserzeichen: <watermark></watermark>: <bibl><abbr>Piccard-Online</abbr> <ref type="Piccard-Online" cRef=""></ref></bibl> ()</p>
+							</support>
+							<extent>
+								<measure type="leavesCount"></measure>
+								<dimensions type="leaf" unit="cm">
+									<height></height>
+									<width></width>
+									<depth></depth>
+								</dimensions>
+								<measure type="format"><!--2° oder fol.--></measure>
+							</extent>
+							<foliation></foliation>
+							<collation><formula></formula></collation>
+							<condition>
+								<p></p>
+							</condition>
+						</supportDesc>
+						<layoutDesc>
+							<layout columns="" writtenLines="" ruledLines="">
+								<p>
+									<dimensions type="written" unit="cm">
+										<height></height>
+										<width></width>
+									</dimensions>
+								</p>
+							</layout>
+						</layoutDesc>
+					</objectDesc>
+					<handDesc hands="">
+						<summary></summary>
+						<handNote scribe="" script="" medium="" scope="">
+							<p></p>
+						</handNote>
+					</handDesc>
+					<scriptDesc>
+						<summary></summary>
+						<scriptNote xml:id=""><p></p></scriptNote>
+					</scriptDesc>
+					<musicNotation></musicNotation>
+					<decoDesc>
+						<summary></summary>
+						<decoNote type=""></decoNote>
+					</decoDesc>
+					<additions></additions>
+					<bindingDesc>
+						<binding contemporary="" notBefore="" notAfter="">
+							<p></p>
+						</binding>
+					</bindingDesc>
+					<accMat type=""></accMat>
+				</physDesc>
+				<history>
+					<origin>
+						<p></p>
+					</origin>
+					<provenance>
+						<p></p>
+					</provenance>
+					<acquisition>
+						<p></p>
+					</acquisition>
+				</history>
+				<additional>
+					<adminInfo>
+						<recordHist>
+							<source><bibl><!-- bibliographial details for catalogue --></bibl></source>
+						</recordHist>
+					</adminInfo>
+					<listBibl>
+						<bibl></bibl>
+					</listBibl>
+				</additional>
+				<msPart>
+					<msIdentifier>
+						<idno></idno>
+					</msIdentifier>
+					<head><!-- same substructures possible as in msDesc/head --></head>
+					<msContents><!-- same substructures possible as in msDesc/msContents --></msContents>
+					<physDesc><!-- same substructures possible as in msDesc/physDesc --></physDesc>
+					<history><!-- same substructures possible as in msDesc/history --></history>
+				</msPart>
+				<msFrag>
+					<msIdentifier>
+						<idno></idno>
+					</msIdentifier>
+					<head><!-- same substructures possible as in msDesc/head --></head>
+					<msContents><!-- same substructures possible as in msDesc/msContents --></msContents>
+					<physDesc>
+						<!-- same substructures possible as in msDesc/physDesc -->
+						<!--
+							beware of special needs for cataloguing fragments 
+							e.g., current dimensions vs. dimensions of the original ms
+						-->
+					</physDesc>
+					<history><!-- same substructures possible as in msDesc/history --></history>
+				</msFrag>
+			</msDesc>
+		</body>
+	</text>
+</TEI>
