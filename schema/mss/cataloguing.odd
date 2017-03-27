@@ -1,0 +1,906 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<TEI 
+  xmlns="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:s="http://www.ascc.net/xml/schematron" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xi="http://www.w3.org/2001/XInclude" 
+  xml:lang="en" n="cataloguing">
+  <teiHeader>
+    <fileDesc>
+      <titleStmt>
+        <title>TEI P5 schema for cataloguing (medieval) manuscripts, v1.0 (based upon the Europeana Regia (ER) schemata, which are based upon ENRICH)</title>
+        <author/>
+      </titleStmt>
+      <editionStmt>
+        <edition>1.0. Latest editing on 14 Feb 2017</edition>
+      </editionStmt>
+      <publicationStmt>
+        <authority>HAB</authority>
+        <address><addrLine><email>schassan@hab.de</email></addrLine></address>
+      </publicationStmt>
+      <notesStmt>
+        <note type="ns">http://www.example.org/ns/nonTEI</note>
+      </notesStmt>
+      <sourceDesc>
+        <p>authored based on the http://diglib.hab.de/rules/schema/ER/v0.4/europeana-regia.xml, which was based on ENRICH WP3_deliv_1.xml</p>
+      </sourceDesc>
+    </fileDesc>
+    <revisionDesc xml:id="revDesc">
+      <change who="#ts" when="2017-02-14">added values for <att>type</att> on <gi>ref</gi> and <gi>ptr</gi>.</change>
+      <change who="#ts" when="2015-08-28">added values for <att>form</att> on <gi>objectDesc</gi>; added values for <att>role</att> on <gi>rs</gi>.</change>
+      <change who="#ts" when="2013-03-05">added <val>facsimile</val>, <val>listBibl</val>, <val>listEvent</val>, <val>listOrg</val>, <val>listPerson</val>, and <val>listPlace</val> to the list of possible start elements of a TEI file (<tag>schemaSpec start=""</tag>).</change>
+      <change who="#ts" when="2011-03-30">added <val>siglum</val> to the list of possible values for <att>type</att> of <gi>altIdentifier</gi>.</change>
+      <change who="#ts" when="2011-02-21">deleted <gi>addrLine</gi> and <gi>refState</gi>, added <gi>teiCorpus</gi> to list of start elements.</change>
+      <change who="#ts" when="2011-02-21">made <att>type</att> on <gi>name</gi> semi-closed and added <val>project</val>.</change>
+      <change who="#ts" when="2011-02-08">made <att>xml:id</att> obligatory on <gi>scriptNote</gi>.</change>
+      <change who="#ts" when="2011-02-08">moved the definition from <att>script</att> of <gi>handNote</gi> to <att>att.handFeatures</att>.</change>
+      <change who="#ts" when="2011-02-01">added predefined terms for the attribute <att>target</att> on the element <gi>term</gi></change>
+      <change who="#ts">many added to <att>script</att> of <gi>handNote</gi>.</change>
+      <change who="#ts"><val>accession</val>, <val>alternative</val>, <val>catalog</val>, <val>erroneous</val>, <val>multivolume</val> and <val>palimpsest</val> are added to the list of possible values for <att>type</att> of <gi>altIdentifier</gi>.</change>
+      <change who="#ts">list of values of <att>type</att> of <gi>measure</gi> adopted.</change>
+      <change who="#ts"><val>unknown</val> added to <att>scope</att> of <gi>handNote</gi>. The attribute has been made recommended.</change>
+      <change who="#ts">removal of <gi>table</gi>, <gi>row</gi>, <gi>cell</gi>, <gi>measure</gi>, <gi>rs</gi>, <gi>teiCorpus</gi>, <gi>linkGrp</gi>, and <att>att.global.linking</att> taken back for reasons to be explained in the text.</change>
+      <change who="#ts">modules <ident>gaiji</ident> and <ident>nets</ident> added to the ODD.</change>
+      <change who="#ts">comments on <term>MASTER</term> removed.</change>
+      <change who="#ts">replaced all occurences of <term>ENRICH</term> by <term>Europeana Regia</term> respectively its short form <abbr>ER</abbr>.</change>
+    </revisionDesc>
+  </teiHeader>
+  <text>
+    <body>
+      <div>
+        <head>Executive Summary</head>
+        <p>This document defines an XML format for the structure of the data which all cataloguing projects funded by the Deutsche Forschungsgemeinschaft (DFG) will use. It is an application of the TEI Release P5. It is based on the Europeana Regia ODD, which again is based on the ENRICH ODD.</p>
+        <p>The schema defined by this document addresses three distinct aspects of a digitized manuscript: 
+          <list type="ordered">
+            <item>metadata describing the original source manuscript (<ptr target="#msdesc"/>) </item>
+            <item>metadata describing digitized images of the original source manuscript (<ptr target="#facs"/>) </item>
+            <item>a transcription of the text contained by the original source manuscript <!--(<ptr target="#transcr"/>) --></item>
+          </list>
+        </p>
+        <p>Within cataloguing projects, only the first two are required. However, the schema documented here also provides for the third, in the interest of completeness and for the assistance of institutions wishing to provide richer access facilities to their holdings. </p>
+        <p>The schema defined by this document is available in <ref target="cataloguing.rng">RelaxNG</ref>, and <ref target="cataloguing.xsd">W3C Schema</ref> formats from the website of the Herzog August Bibliothek Wolfenbüttel (HAB) at the address <ptr target="http://diglib.hab.de/rules/schema/mss/cataloguing/"/>.</p>
+        <p>For this customisation we propose to reduce the number of choices to encode some phenomena and to constrain attribute values where possible. It should be stressed however that <list>
+            <item>the resulting schema must remain TEI Conformant: we are only defining a subset</item>
+            <item>no constraints will be introduced without full consent from participating institutions</item>
+          </list>
+        </p>
+        <p>The overall structure of an cataloguing conformant XML document may be summarized as follows: 
+          <egXML xmlns="http://www.tei-c.org/ns/Examples"><TEI>
+              <teiHeader>
+                <!-- ... metadata describing the digitization  -->
+                <!-- ... metadata describing the manuscript  -->
+              </teiHeader>
+              <facsimile><!-- ... metadata describing the digital images --></facsimile>
+              <text><!-- (optional) transcription of the manuscript --></text>
+            </TEI>
+          </egXML>
+        </p>
+        <p>In the documentation of the HAB, we provide full user-level documentation for the cataloguing encoding scheme. This documentation is generated from the P5 release of the TEI Guidelines together with some revised descriptive material. In the present document we summarize how the TEI P5 Release has been customized.</p>
+      </div>
+      <div xml:id="cataloguingODD">
+        <head>Customization Section</head>
+        <p>We include in the schema the four basic key TEI modules <ident>header</ident>, <ident>core</ident>, <ident>tei</ident>, and <ident>textstructure</ident>. We <add>—as ENRICH does—</add> also include five specialized modules: <ident>msdescription</ident>, <ident>linking</ident>, <ident>namesdates</ident>, <ident>figures</ident>, and <ident>transcr</ident>. <add>Additionally to these we propose to include the module <ident>gaiji</ident> in order to allow for the use of the element <gi>g</gi> and the module <ident>nets</ident> in order to allow for the use of the element <gi>graph</gi>.</add></p>
+        <p>All the elements and attributes defined by these modules are included in the cataloguing schema, with the following modifications. Firstly, several unwanted elements are deleted. Secondly, some optional attributes have been made compulsory, and their range of possible values are constrained. Finally, the content model for a small number of elements has been simplified to remove unwanted alternatives.</p>
+        <!-- text generated by prosify.xsl goes here -->
+        <p>The following elements are deleted: 
+          <gi>ab</gi>, <gi>alt</gi>, <gi>altGrp</gi>, <gi>analytic</gi>, <gi>appInfo</gi>, <gi>application</gi>, 
+          <gi>biblFull</gi>, <gi>biblStruct</gi>, <gi>binaryObject</gi>, <gi>broadcast</gi>, 
+          <gi>cRefPattern</gi>, <gi>cit</gi>, <gi>climate</gi>, <gi>correction</gi>, 
+          <gi>distinct</gi>, 
+          <gi>email</gi>, <gi>emph</gi>, <gi>equipment</gi>, <gi>equiv</gi>, 
+          <gi>fsdDecl</gi>, 
+          <gi>headItem</gi>, <gi>headLabel</gi>, <gi>hyphenation</gi>, 
+          <gi>imprint</gi>, <gi>interpretation</gi>, 
+          <gi>join</gi>, <gi>joinGrp</gi>, 
+          <gi>link</gi>, <gi>listNym</gi>, 
+          <gi>measureGrp</gi>, <gi>meeting</gi>, <gi>mentioned</gi>, <gi>metDecl</gi>, <gi>metSym</gi>, <gi>monogr</gi>, <gi>msItemStruct</gi>, 
+          <gi>namespace</gi>, <gi>normalization</gi>, <gi>num</gi>, <gi>nym</gi>, 
+          <gi>postBox</gi>, <gi>postCode</gi>, 
+          <gi>q</gi>, <gi>quotation</gi>, 
+          <gi>recording</gi>, <gi>recordingStmt</gi>, <gi>refsDecl</gi>, <gi>rendition</gi>, 
+          <gi>said</gi>, <gi>samplingDecl</gi>, <gi>scriptStmt</gi>, <gi>segmentation</gi>, <gi>series</gi>, <gi>sp</gi>, <gi>speaker</gi>, <gi>stage</gi>, <gi>state</gi>, <gi>stdVals</gi>, <gi>street</gi>, 
+          <gi>tagUsage</gi>, <gi>tagsDecl</gi>, <gi>terrain</gi>, <gi>time</gi>, <gi>timeline</gi>, 
+          <gi>variantEncoding</gi>, 
+          <gi>when</gi>.
+        </p>
+        <!--<p><del>The <ident type="class">att.global.linking</ident> class is also deleted, since we anticipate no need for complex pointing mechanisms.</del></p>-->
+        <p>For ENRICH, the elements <gi>table</gi>, <gi>row</gi>, <gi>cell</gi>, <gi>measure</gi>, <gi>rs</gi>, <gi>teiCorpus</gi>, <gi>linkGrp</gi>, and <att>att.global.linking</att> had been deleted as well. For the cataloguing this removal has been taken back for the following reasons: <list>
+            <item>We came accross manuscript descriptions that contain tables. We therefore consider the elements <gi>table</gi>, <gi>row</gi>, and <gi>cell</gi> to be useful in the schema.</item>
+            <item>Some numbers, especially in the physical description, like the number of leaves, should be encoded. As this could not be done using <gi>dimensions</gi>, the element <gi>measure</gi> has to be included in the schema.</item>
+            <item>We came accross some older descriptions that consist of merely more than the manuscript heading. If this heading contains an authors name, this could not be encoded with <gi>author</gi>, as the element <gi>head</gi> cannot have it as child and the title is encoded as <gi>title</gi>. Thus, if an ancient title contains an author's name, this has to be encoded using <gi>rs</gi>, preferably with <att>type</att> and <val>author</val>.</item>
+            <item>The element <gi>teiCorpus</gi> is needed in order to deal with complex digital objects such as a digital edition of which the manuscript description could be part of. Also, in case one wants to construct a manuscript catalogue, and every manuscript description exists as one TEI document, the <gi>teiCorpus</gi> is one possible way to group these together.</item>
+            <item>As the data for <emph>Europeana</emph> will be extracted not only from the manuscript descriptions but also from structural metadata which will be encoded in the <gi>text</gi> element of any TEI file, there may be the need for extensive linkage between items in the manuscript description, represented as <gi>msItem</gi>s or <gi>decoNote</gi>s and textual divisions of the transcription. Thus both the element <gi>linkGrp</gi> as well as the attributes of the class <ident type="class">att.global.linking</ident> should be present in the schema.</item>
+          </list>
+        </p>
+        <p>On the <gi>altIdentifier</gi> element, the <att>type</att> attribute is compulsory, and must take one of the following values: <val>former</val>; <val>internal</val>; <val>palimpsest</val>; <val>partial</val>; <val>system</val>; <val>other</val>. To these values the following values have been added in the course of ER: <val>accession</val>; <val>alternative</val>; <val>catalog</val>; <val>collection</val>; <val>erroneous</val>; <val>multivolume</val>; <val>siglum</val>.</p>
+        <p>On the <gi>availability</gi> element, the <att>status</att> attribute is compulsory, and must take one of the following values: <val>free</val>; <val>unknown</val>; <val>restricted</val>.</p>
+        <p>On the <gi>biblScope</gi> element, the <att>type</att> attribute is compulsory, and must take one of the following values: <val>volume</val>; <val>pages</val>.</p>
+        <p>On the <gi>custEvent</gi> element, the <att>type</att> attribute is compulsory, and must take one of the following values: <val>check</val>; <val>conservation</val>; <val>description</val>; <val>exhibition</val>; <val>loan</val>; <val>photography</val>; <val>other</val>.</p>
+        <p>On the <gi>decoNote</gi> element, the <att>type</att> attribute is compulsory, and must take one of the following values: <val>border</val>; <val>diagram</val>; <val>initial</val>; <val>marginal</val>; <val>miniature</val>; <val>mixed</val>; <val>paratext</val>; <val>secondary</val>; <val>other</val>; <val>illustration</val>; <val>printmark</val>; <val>publishmark</val>; <val>vignette</val>; <val>frieze</val>; <val>map</val>; <val>unspecified</val>.</p>
+        <p>On the <gi>dimensions</gi> element, the <att>type</att> attribute is compulsory, and must take one of the following values: <val>leaf</val>; <val>binding</val>; <val>slip</val>; <val>written</val>; <val>boxed</val>; <val>unknown</val>.</p>
+        <p>On the <gi>measure</gi> element, the <att>type</att> attribute is compulsory, and may take one of the following values: <val>columnsCount</val>; <val>leavesCount</val>; <val>linesCount</val>; <val>format</val>; <val>unknown</val>. For this element could not be used the same attribute values as for <gi>dimensions</gi>, as the latter would not distinguish between sizes and numbers.</p>
+        <p>On the <gi>gap</gi> element, the <att>reason</att> attribute is compulsory, and must take one of the following values: <val>damage</val>; <val>illegible</val>; <val>cancelled</val>; <val>irrelevant</val>.</p>
+        <p>On all members of the <ident>att.dimensions</ident> class, the <att>unit</att> attribute is compulsory, and must take one of the following values: <val>chars</val>; <val>leaves</val>; <val>lines</val>; <val>mm</val>; <val>pages</val>; <val>words</val>. The <att>precision</att> attribute is removed. </p>
+        <p>On the <gi>handNote</gi> element, the <att>script</att> attribute is compulsory, and must take one of the following values: <val>carolmin</val>; <val>textualis</val>; <val>cursiva</val>; <val>hybrida</val>; <val>humbook</val>; <val>humcursiva</val>; <val>kanzlei</val>; <val>kurrent</val>; <val>capquad</val>; <val>caprust</val>; <val>uncialis</val>; <val>semiunc</val>; <val>benevent</val>; <val>luxeuil</val>; <val>corbie</val>; <val>insulmin</val>; <val>alemmin</val>; <val>raetmin</val>; <val>carolgot</val>; <val>textura</val>; <val>rotunda</val>; <val>cancell</val>; <val>bastarda</val>; <val>cursant</val>; <val>cursrec</val>; <val>other</val>.</p>
+        <p>On the <gi>handNote</gi> element, the <att>scope</att> attribute is recommended, and must take one of the following values: <val>sole</val>; <val>major</val>; <val>minor</val><add>; <val>unknown</val></add>.</p>
+        <p>On the <gi>hi</gi> element, the <att>rend</att> attribute is compulsory, and should take one of the following values: <val>hyphenated</val>; <val>underline</val>; <val>double-underline</val>; <val>bold</val>; <val>spaced</val>; <val>stacked</val>; <val>caps</val>; <val>italic</val>; <val>sup</val>; <val>rubric</val>.</p>
+        <p>On the <gi>layout</gi> element, the <att>columns</att> attribute is compulsory, and must take a numeric value.</p>
+        <p>On the <gi>msDesc</gi> element, the <att>xml:id</att> attribute is compulsory, and must be a valid XML identifier. </p>
+        <p>On the <gi>msDesc</gi> element, the <att>xml:lang</att> attribute is compulsory, and must be a valid ISO 639 language code.</p>
+        <p>On the <gi>name</gi> element, the <att>type</att> attribute is compulsory, and must take one of the following values: <val>person</val>; <val>place</val>; <val>org</val>; <val>unknown</val>.</p>
+        <p>On the <gi>objectDesc</gi> element, the <att>form</att> attribute is compulsory, and must take one of the following values: <val>codex</val>; <val>fragment</val>; <val>leaf</val>; <val>letter</val>; <val>scroll</val>; <val>charter</val>; <val>other</val>.</p>
+        <p>On the <gi>person</gi> element, the <att>sex</att> attribute is compulsory, and must be one of 1 (male), 2 (female), 0 (inapplicable), or 9 (unknown). </p>
+        <p>On the <gi>ref</gi> element, the <att>type</att> attribute is recommended, and should take on of the following values: <val>biblical</val>; <val>classical</val>; <val>medieval</val>; <val>altMs</val>; <val>mss</val>; <val>inkunabeln</val>; <val>drucke</val>; <val>pdf</val>; <val>purl</val>; <val>urn</val>; <val>doi</val>; <val>crossRef</val>; <val>repertorium</val>.</p>
+        <p>On the <gi>region</gi> element, the <att>type</att> attribute is compulsory, and must take one of the following values: <val>parish</val>; <val>county</val>; <val>compass</val>; <val>geog</val>; <val>state</val>; <val>unknown</val>.</p>
+        <p>On the <gi>supplied</gi> element, the <att>reason</att> attribute is compulsory, and must take one of the following values: <val>omitted</val>; <val>illegible</val>; <val>damage</val>; <val>unknown</val>.</p>
+        <p>On the <gi>supportDesc</gi> element, the <att>material</att> attribute is compulsory, and must take one of the following values: <val>perg</val>; <val>chart</val>; <val>mixed</val>; <val>unknown</val>.</p>
+        <p>The following changes do not affect TEI conformance since either they affect only optional parts of TEI content models or they involve additional value constraints for TEI attributes: <list>
+            <item>On the <gi>textLang</gi> element, the <att>mainLang</att> attribute is compulsory, and must take a legal character identifier as value.</item>
+            <item>The optional elements <att>xml:id</att> and <att>xml:lang</att> are made mandatory for the <gi>msDesc</gi> element.</item>
+            <item>The content model of the date element is changed to include a schematron rule which enforces an appropriate selection of attributes (one of: <att>when</att>, <att>to</att> and <att>from</att>, or <att>notAfter</att> and <att>notBefore</att>) </item>
+            <!--<item>The content model of the recordHist element is changed to remove the possibility of including the <gi>change</gi> element here. </item>-->
+          </list>
+        </p>
+        <!-- select modules -->
+        <schemaSpec ident="cataloguing" start="TEI teiCorpus teiHeader msDesc facsimile listBibl listEvent listOrg listPerson listPlace" prefix="TEI_" xml:id="schemaSpec">
+          <!-- required modules -->
+          <moduleRef key="header"/>
+          <moduleRef key="core"/>
+          <moduleRef key="tei"/>
+          <moduleRef key="textstructure"/>
+          <!-- optional modules -->
+          <moduleRef key="analysis"/>
+          <moduleRef key="figures"/>
+          <moduleRef key="gaiji"/>
+          <moduleRef key="linking"/>
+          <moduleRef key="msdescription"/>
+          <moduleRef key="namesdates"/>
+          <moduleRef key="nets"/>
+          <moduleRef key="tagdocs"/>
+          <moduleRef key="textcrit"/>
+          <moduleRef key="transcr"/>
+          <!-- delete uninteresting classes -->
+          <!--<classSpec ident="att.global.linking" type="atts" mode="delete"></classSpec>-->
+          <classSpec ident="att.datable.iso" type="atts" mode="delete"/>
+          <classSpec ident="model.addrPart" type="model" mode="delete"/>
+          <!-- delete unwanted elements -->
+          <elementSpec module="core" ident="address" mode="delete"/>
+          <elementSpec module="core" ident="addrLine" mode="delete"/>
+          <elementSpec module="core" ident="analytic" mode="delete"/>
+          <elementSpec module="core" ident="biblFull" mode="delete"/>
+          <elementSpec module="core" ident="biblStruct" mode="delete"/>
+          <elementSpec module="core" ident="binaryObject" mode="delete"/>
+          <elementSpec module="core" ident="distinct" mode="delete"/>
+          <elementSpec module="core" ident="email" mode="delete"/>
+          <elementSpec module="core" ident="emph" mode="delete"/>
+          <elementSpec module="core" ident="equiv" mode="delete"/>
+          <elementSpec module="core" ident="headItem" mode="delete"/>
+          <elementSpec module="core" ident="headLabel" mode="delete"/>
+          <elementSpec module="core" ident="imprint" mode="delete"/>
+          <elementSpec module="core" ident="measureGrp" mode="delete"/>
+          <elementSpec module="core" ident="meeting" mode="delete"/>
+          <elementSpec module="core" ident="mentioned" mode="delete"/>
+          <elementSpec module="core" ident="monogr" mode="delete"/>
+          <elementSpec module="core" ident="num" mode="delete"/>
+          <elementSpec module="core" ident="postBox" mode="delete"/>
+          <elementSpec module="core" ident="postCode" mode="delete"/>
+          <elementSpec module="core" ident="refsDecl" mode="delete"/>
+          <elementSpec module="core" ident="said" mode="delete"/>
+          <elementSpec module="core" ident="series" mode="delete"/>
+          <elementSpec module="core" ident="sp" mode="delete"/>
+          <elementSpec module="core" ident="speaker" mode="delete"/>
+          <elementSpec module="core" ident="stage" mode="delete"/>
+          <elementSpec module="core" ident="street" mode="delete"/>
+          <elementSpec module="core" ident="time" mode="delete"/>
+          <elementSpec module="header" ident="appInfo" mode="delete"/>
+          <elementSpec module="header" ident="application" mode="delete"/>
+          <elementSpec module="header" ident="broadcast" mode="delete"/>
+          <elementSpec module="header" ident="correction" mode="delete"/>
+          <elementSpec module="header" ident="cRefPattern" mode="delete"/>
+          <elementSpec module="header" ident="equipment" mode="delete"/>
+          <elementSpec module="header" ident="fsdDecl" mode="delete"/>
+          <elementSpec module="header" ident="hyphenation" mode="delete"/>
+          <elementSpec module="header" ident="interpretation" mode="delete"/>
+          <elementSpec module="header" ident="metDecl" mode="delete"/>
+          <elementSpec module="header" ident="metSym" mode="delete"/>
+          <elementSpec module="header" ident="namespace" mode="delete"/>
+          <elementSpec module="header" ident="normalization" mode="delete"/>
+          <elementSpec module="header" ident="quotation" mode="delete"/>
+          <elementSpec module="header" ident="recording" mode="delete"/>
+          <elementSpec module="header" ident="recordingStmt" mode="delete"/>
+          <elementSpec module="header" ident="refState" mode="delete"/>
+          <elementSpec module="header" ident="rendition" mode="delete"/>
+          <elementSpec module="header" ident="samplingDecl" mode="delete"/>
+          <elementSpec module="header" ident="scriptStmt" mode="delete"/>
+          <elementSpec module="header" ident="segmentation" mode="delete"/>
+          <elementSpec module="header" ident="state" mode="delete"/>
+          <elementSpec module="header" ident="stdVals" mode="delete"/>
+          <elementSpec module="header" ident="tagUsage" mode="delete"/>
+          <elementSpec module="header" ident="tagsDecl" mode="delete"/>
+          <elementSpec module="header" ident="variantEncoding" mode="delete"/>
+          <elementSpec module="linking" ident="ab" mode="delete"/>
+          <elementSpec module="linking" ident="alt" mode="delete"/>
+          <elementSpec module="linking" ident="altGrp" mode="delete"/>
+          <elementSpec module="linking" ident="join" mode="delete"/>
+          <elementSpec module="linking" ident="joinGrp" mode="delete"/>
+          <elementSpec module="linking" ident="timeline" mode="delete"/>
+          <elementSpec module="linking" ident="when" mode="delete"/>
+          <elementSpec module="msdescription" ident="msItemStruct" mode="delete"/>
+          <elementSpec module="namesdates" ident="climate" mode="delete"/>
+          <elementSpec module="namesdates" ident="listNym" mode="delete"/>
+          <elementSpec module="namesdates" ident="nym" mode="delete"/>
+          <elementSpec module="namesdates" ident="terrain" mode="delete"/>
+          <elementSpec module="textstructure" ident="div1" mode="delete"/>
+          <elementSpec module="textstructure" ident="div2" mode="delete"/>
+          <elementSpec module="textstructure" ident="div3" mode="delete"/>
+          <elementSpec module="textstructure" ident="div4" mode="delete"/>
+          <elementSpec module="textstructure" ident="div5" mode="delete"/>
+          <elementSpec module="textstructure" ident="div6" mode="delete"/>
+          <elementSpec module="textstructure" ident="div7" mode="delete"/>
+          <!-- constrain attribute values for several elements and also supply defaults -->
+          <elementSpec ident="altIdentifier" module="msdescription" mode="change">
+            <attList>
+              <attDef ident="type" mode="change" usage="req">
+                <defaultVal>catalog</defaultVal>
+                <valList type="closed" mode="replace">
+                  <valItem ident="accession"><desc>accession number</desc></valItem>
+                  <valItem ident="alternative"><desc>the standard identification in an alternative version in writing</desc></valItem>
+                  <valItem ident="catalog"><desc>number in a catalogue</desc></valItem>
+                  <valItem ident="collection"><desc>a manuscript that has been grouped together with other manuscripts for some reason</desc></valItem>
+                  <valItem ident="erroneous"><desc>erroneous shelf number, but used in some literature</desc></valItem>
+                  <valItem ident="former"><desc>former shelf number</desc></valItem>
+                  <valItem ident="internal"><desc>internal project identifier</desc></valItem>
+                  <valItem ident="multivolume"><desc>mss is part of a multivolume and therefore has more than one shelfmark</desc></valItem>
+                  <valItem ident="other"><desc>unspecified</desc></valItem>
+                  <valItem ident="palimpsest"><desc>identifier of a previously written but deleted item</desc></valItem>
+                  <valItem ident="partial"><desc>identifier of a previously distinct item</desc></valItem>
+                  <valItem ident="siglum"><desc>siglum, e.g. in a critical edition</desc></valItem>
+                  <valItem ident="system"><desc>former system identifier (Manuscriptorium specific)</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <!-- compare values of <rs>, and copy any changes to the other place -->
+          <elementSpec ident="author" module="core" mode="change">
+            <attList>
+              <attDef ident="role" mode="change" usage="rec">
+                <defaultVal>author</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="author"><desc>author of a work - FRBR work</desc></valItem>
+                  <valItem ident="translator"><desc>translator of a work - FRBR expression</desc></valItem>
+                  <valItem ident="commentator"><desc>commentator of a work - FRBR manifestation</desc></valItem>
+                  <valItem ident="editor"><desc>editor of a work - FRBR manifestation/item</desc></valItem>
+                  <valItem ident="other"><desc>unspecified</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="availability" mode="change" module="header">
+            <attList>
+              <attDef ident="status" mode="change" usage="req">
+                <defaultVal>unknown</defaultVal>
+                <valList type="closed" mode="replace">
+                  <valItem ident="free"/>
+                  <valItem ident="unknown"/>
+                  <valItem ident="restricted"/>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="biblScope" mode="change" module="core">
+            <attList>
+              <attDef ident="type" mode="change" usage="req">
+                <defaultVal>pages</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="column"/>
+                  <valItem ident="volume"/>
+                  <valItem ident="pages"/>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="custEvent" mode="change" module="msdescription">
+            <attList>
+              <attDef ident="type" mode="change" usage="rec">
+                <defaultVal>other</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="check"/>
+                  <valItem ident="conservation"/>
+                  <valItem ident="description"/>
+                  <valItem ident="exhibition"/>
+                  <valItem ident="loan"/>
+                  <valItem ident="photography"/>
+                  <valItem ident="other"/>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="decoNote" mode="change" module="msdescription">
+            <attList>
+              <attDef ident="type" mode="change" usage="rec">
+                <defaultVal>other</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="border"/>
+                  <valItem ident="diagram"/>
+                  <valItem ident="initial"/>
+                  <valItem ident="marginal"/>
+                  <valItem ident="miniature"/>
+                  <valItem ident="mixed"/>
+                  <valItem ident="paratext"/>
+                  <valItem ident="secondary"/>
+                  <valItem ident="other"/>
+                  <valItem ident="illustration"/>
+                  <valItem ident="printmark"/>
+                  <valItem ident="publishmark"/>
+                  <valItem ident="vignette"/>
+                  <valItem ident="frieze"/>
+                  <valItem ident="map"/>
+                  <valItem ident="unspecified"/>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="dimensions" mode="change" module="msdescription">
+            <attList>
+              <attDef ident="type" mode="change" usage="req">
+                <defaultVal>unknown</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="binding"/>
+                  <valItem ident="boxed"/>
+                  <valItem ident="illustration"/>
+                  <valItem ident="leaf"/>
+                  <valItem ident="slip"/>
+                  <valItem ident="written"/>
+                  <valItem ident="unknown"/>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="gap" mode="change" module="core">
+            <attList>
+              <attDef ident="reason" mode="change" usage="rec">
+                <desc>gives the reason for omission of this material from the transcription.</desc>
+                <defaultVal>irrelevant</defaultVal>
+                <valList type="closed" mode="replace">
+                  <valItem ident="damage"><desc>medium is damaged</desc></valItem>
+                  <valItem ident="illegible"><desc>material cannot be reliably read</desc></valItem>
+                  <valItem ident="cancelled"><desc>material can be read but has been cancelled by scribe</desc></valItem>
+                  <valItem ident="irrelevant"><desc>material is not regarded as relevant by the transcriber</desc></valItem>
+                  <valItem ident="omitted"><desc>material omitted by transcriber</desc></valItem>
+                  <valItem ident="lacuna"><desc>material missing from the source</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="hi" mode="change" module="core">
+            <attList>
+              <attDef ident="rend" mode="change" usage="rec">
+                <valList type="semi" mode="replace">
+                  <valItem ident="font-stretch:expanded"/>
+                  <valItem ident="font-style:italic"/>
+                  <valItem ident="font-style:normal"/>
+                  <valItem ident="font-variant:small-caps"/>
+                  <valItem ident="font-weight:bold"/>
+                  <valItem ident="text-decoration:underline"/>
+                  <valItem ident="text-decoration:double-underline"/>
+                  <valItem ident="hyphenated"/>
+                  <valItem ident="rubric"/>
+                  <valItem ident="stacked"/>
+                  <valItem ident="sup"/>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="layout" mode="change" module="msdescription">
+            <attList>
+              <attDef ident="columns" mode="change" usage="rec">
+                <datatype minOccurs="1" maxOccurs="2">
+                  <rng:ref name="data.count"/>
+                </datatype>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="measure" mode="change" module="core">
+            <attList>
+              <attDef ident="type" mode="change" usage="req">
+                <defaultVal>unknown</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="currency"/>
+                  <valItem ident="leavesCount"/>
+                  <valItem ident="pagesCount"/>
+                  <valItem ident="columnsCount"/>
+                  <valItem ident="linesCount"/>
+                  <valItem ident="format"/>
+                  <valItem ident="pageDimensions"/>
+                  <valItem ident="binding"/>
+                  <valItem ident="written"/>
+                  <valItem ident="boxed"/>
+                  <valItem ident="miniature"/>
+                  <valItem ident="illustration"/>
+                  <valItem ident="unknown"/>
+                </valList>
+              </attDef>
+              <!--
+              <attDef ident="unit" mode="change" usage="opt">
+                <defaultVal>cm</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="chars"><desc>written characters</desc></valItem>
+                  <valItem ident="cm"><desc>centimetres</desc></valItem>
+                  <valItem ident="columns"><desc>columns</desc></valItem>
+                  <valItem ident="in"><desc>inches</desc></valItem>
+                  <valItem ident="leaves"><desc>leaves</desc></valItem>
+                  <valItem ident="lines"><desc>lines</desc></valItem>
+                  <valItem ident="mm"><desc>millimetres</desc></valItem>
+                  <valItem ident="pages"><desc>pages</desc></valItem>
+                  <valItem ident="words"><desc>words</desc></valItem>
+                </valList>
+              </attDef>
+              -->
+            </attList>
+          </elementSpec>
+          <elementSpec ident="msDesc" mode="change" module="msdescription">
+            <attList>
+              <attDef ident="xml:id" mode="change" usage="req"/>
+              <attDef ident="xml:lang" mode="change" usage="req">
+                <defaultVal>de</defaultVal>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="name" mode="change" module="core">
+            <attList>
+              <attDef ident="type" mode="change" usage="rec">
+                <defaultVal>unknown</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="person"><desc>the name of a person</desc></valItem>
+                  <valItem ident="place"><desc>the name of a place</desc></valItem>
+                  <valItem ident="project"><desc>the name of a project</desc></valItem>
+                  <valItem ident="corporate"><desc>the name of an corporation</desc></valItem>
+                  <valItem ident="unknown"><desc>name of an unknown type</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="objectDesc" mode="change" module="msdescription">
+            <attList>
+              <attDef ident="form" mode="change" usage="req">
+                <defaultVal>codex</defaultVal>
+                <valList type="closed" mode="replace">
+                  <valItem ident="codex"><desc>a bound codex</desc></valItem>
+                  <valItem ident="charter"><desc>a charter</desc></valItem>
+                  <valItem ident="fascicle"><desc>part of a bound codex with its own history</desc></valItem>
+                  <valItem ident="fragment"><desc>a fragment of a codex</desc></valItem>
+                  <valItem ident="leaf"><desc>a loose leaf</desc></valItem>
+                  <valItem ident="letter"><desc>a letter, possibly part of a bound codex now, i.e. a composite manuscript</desc></valItem>
+                  <valItem ident="scroll"><desc>a scroll</desc></valItem>
+                  <valItem ident="other"><desc>any other format</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="person" mode="change" module="namesdates">
+            <attList>
+              <attDef ident="sex" mode="change" usage="rec">
+                <defaultVal>0</defaultVal>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="ptr" mode="change" module="core">
+            <attList>
+              <attDef ident="type" mode="change" usage="rec">
+                <valList type="semi" mode="replace">
+                  <valItem ident="biblical"><desc>certain type of reference, should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="classical"><desc>certain type of reference, should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="medieval"><desc>certain type of reference, should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="altMs"><desc>reference to a manuscript that belongs to another institution other than the owner of the described manuscript</desc></valItem>
+                  <valItem ident="mss"><desc>reference to a manuscript that belongs to the same institution as the described manuscript; should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="object"><desc>reference to an object of any kind; should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="purl"><desc>PURL (=Permanent Unified Resource Locator) of the work</desc></valItem>
+                  <valItem ident="doi"><desc>DOI of the work</desc></valItem>
+                  <valItem ident="urn"><desc>URN (=Unified Resource Name) of the work</desc></valItem>
+                  <valItem ident="tgn"><desc>Number in the Getty <term>Thesaurus of Geographical Names</term></desc></valItem>
+                  <valItem ident="vd16"><desc>Number of an item in the database VD 16. To be used without leading <quote>VD 16</quote>, spaces will be omitted, e.g. @cRef="E3185"</desc></valItem>
+                  <valItem ident="vd17"><desc>Number of an item in the database VD 17. To be used without leading <quote>VD 17</quote>, e.g. @cRef="23:320717T"</desc></valItem>
+                  <valItem ident="manumed"><desc>Manuscripta Medediaevalia, Identifier not yet established</desc></valItem>
+                  <valItem ident="opac"><desc>reference number in the local library catalogue (OPAC)</desc></valItem>
+                  <valItem ident="pl"><desc>Patrologie Latina; traditionally cited, with volume and column (a-c), without spaces, e.g. cRef="43_253A"</desc></valItem>
+                  <valItem ident="pg"><desc>Patrologia Graeca; like PL, references the column of the Greek text, e.g. cRef="43_253A").</desc></valItem>
+                  <valItem ident="ebdb"><desc><ref target="http://www.hist-einband.de">Einbanddatenbank</ref></desc></valItem>
+                  <valItem ident="wzma"><desc>Wasserzeichen des Mittelalters</desc></valItem>
+                  <valItem ident="wilc"><desc>Watermarks in incunabula printed in the Low Countries</desc></valItem>
+                  <valItem ident="gw"><desc>Gesamtverzeichnis der Wiegendrucke</desc></valItem>
+                  <valItem ident="pnd"><desc>Personennamendatei</desc></valItem>
+                  <valItem ident="gnd"><desc>Gemeinsame Normdatei</desc></valItem>
+                  <valItem ident="viaf"><desc>Virtual International Authority File (only to be used if no reference number in national authority files exists)</desc></valItem>
+                  <valItem ident="other"><desc>any other type of reference</desc></valItem>
+                  <!-- values used local at the HAB -->
+                  <valItem ident="wdb"><desc>Identifier (xml:id) aus facsimile.xml, z.B. drucke_lh-4f-106-1_00003; vgl. Allgemeines</desc></valItem>
+                  <valItem ident="inkunabeln"/>
+                  <valItem ident="drucke"/>
+                  <valItem ident="pdf"/>
+                  <valItem ident="gbv"><desc>PPN des GBV</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="ref" mode="change" module="core">
+            <attList>
+              <attDef ident="type" mode="change" usage="rec">
+                <valList type="semi" mode="replace">
+                  <valItem ident="biblical"><desc>certain type of reference, should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="classical"><desc>certain type of reference, should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="medieval"><desc>certain type of reference, should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="altMs"><desc>reference to a manuscript that belongs to another institution other than the owner of the described manuscript</desc></valItem>
+                  <valItem ident="mss"><desc>reference to a manuscript that belongs to the same institution as the described manuscript; should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="object"><desc>reference to an object of any kind; should be accompagnied by cRef</desc></valItem>
+                  <valItem ident="purl"><desc>PURL (=Permanent Unified Resource Locator) of the work</desc></valItem>
+                  <valItem ident="doi"><desc>DOI of the work</desc></valItem>
+                  <valItem ident="urn"><desc>URN (=Unified Resource Name) of the work</desc></valItem>
+                  <valItem ident="tgn"><desc>Number in the Getty <term>Thesaurus of Geographical Names</term></desc></valItem>
+                  <valItem ident="vd16"><desc>Number of an item in the database VD 16. To be used without leading <quote>VD 16</quote>, spaces will be omitted, e.g. @cRef="E3185"</desc></valItem>
+                  <valItem ident="vd17"><desc>Number of an item in the database VD 17. To be used without leading <quote>VD 17</quote>, e.g. @cRef="23:320717T"</desc></valItem>
+                  <valItem ident="manumed"><desc>Manuscripta Medediaevalia, Identifier not yet established</desc></valItem>
+                  <valItem ident="opac"><desc>reference number in the local library catalogue (OPAC)</desc></valItem>
+                  <valItem ident="pl"><desc>Patrologie Latina; traditionally cited, with volume and column (a-c), without spaces, e.g. cRef="43_253A"</desc></valItem>
+                  <valItem ident="pg"><desc>Patrologia Graeca; like PL, references the column of the Greek text, e.g. cRef="43_253A").</desc></valItem>
+                  <valItem ident="ebdb"><desc><ref target="http://www.hist-einband.de">Einbanddatenbank</ref></desc></valItem>
+                  <valItem ident="wzma"><desc>Wasserzeichen des Mittelalters</desc></valItem>
+                  <valItem ident="wilc"><desc>Watermarks in incunabula printed in the Low Countries</desc></valItem>
+                  <valItem ident="gw"><desc>Gesamtverzeichnis der Wiegendrucke</desc></valItem>
+                  <valItem ident="pnd"><desc>Personennamendatei</desc></valItem>
+                  <valItem ident="gnd"><desc>Gemeinsame Normdatei</desc></valItem>
+                  <valItem ident="viaf"><desc>Virtual International Authority File (only to be used if no reference number in national authority files exists)</desc></valItem>
+                  <valItem ident="other"><desc>any other type of reference</desc></valItem>
+                  <!-- values used local at the HAB -->
+                  <valItem ident="wdb"><desc>Identifier (xml:id) aus facsimile.xml, z.B. drucke_lh-4f-106-1_00003; vgl. Allgemeines</desc></valItem>
+                  <valItem ident="inkunabeln"/>
+                  <valItem ident="drucke"/>
+                  <valItem ident="pdf"/>
+                  <valItem ident="gbv"><desc>PPN des GBV</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="region" mode="change" module="namesdates">
+            <attList>
+              <attDef ident="type" mode="change" usage="rec">
+                <defaultVal>unknown</defaultVal>
+                <valList type="closed" mode="replace">
+                  <valItem ident="parish"/>
+                  <valItem ident="county"/>
+                  <valItem ident="compass"/>
+                  <valItem ident="geog"/>
+                  <valItem ident="state"/>
+                  <valItem ident="unknown"/>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <!-- compare values of <author>, and copy any changes to the other place -->
+          <elementSpec ident="rs" module="core" mode="change">
+            <attList>
+              <attDef ident="role" mode="change" usage="rec">
+                <defaultVal>author</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="author"><desc>author of a work - FRBR work</desc></valItem>
+                  <valItem ident="translator"><desc>translator of a work - FRBR expression</desc></valItem>
+                  <valItem ident="commentator"><desc>commentator of a work - FRBR manifestation</desc></valItem>
+                  <valItem ident="editor"><desc>editor of a work - FRBR manifestation/item</desc></valItem>
+                  <valItem ident="donor"><desc>person who has donated the manuscript, who commissioned the manuscript</desc></valItem>
+                  <valItem ident="scribe"><desc>scribe of the manuscript</desc></valItem>
+                  <valItem ident="illuminator"><desc>person who illuminated the manuscript</desc></valItem>
+                  <valItem ident="sender"><desc>person who sent a letter</desc></valItem>
+                  <valItem ident="addressee"><desc>person who received a letter, to whom a letter was addressed</desc></valItem>
+                  <valItem ident="owner_previous"><desc>previous owner of the manuscript</desc></valItem>
+                  <valItem ident="saint"><desc>person is mentioned as saint</desc></valItem>
+                  <valItem ident="literary"><desc>person is mention as literary figure</desc></valItem>
+                  <valItem ident="other"><desc>unspecified</desc></valItem>
+                </valList>
+              </attDef>
+              <attDef ident="type" mode="change" usage="req">
+                <defaultVal>unknown</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="person"><desc>the name of a person</desc></valItem>
+                  <valItem ident="place"><desc>the name of a place</desc></valItem>
+                  <valItem ident="project"><desc>the name of a project</desc></valItem>
+                  <valItem ident="corporate"><desc>the name of an corporation</desc></valItem>
+                  <valItem ident="unknown"><desc>name of an unknown type</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="scriptNote" module="header" mode="change">
+            <attList>
+              <attDef ident="xml:id" mode="change" usage="rec"/>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="supplied" mode="change" module="transcr">
+            <attList>
+              <attDef ident="reason" mode="change" usage="rec">
+                <defaultVal>unknown</defaultVal>
+                <valList type="closed" mode="replace">
+                  <valItem ident="omitted"/>
+                  <valItem ident="illegible"/>
+                  <valItem ident="damage"/>
+                  <valItem ident="unknown"/>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="supportDesc" mode="change" module="msdescription">
+            <attList>
+              <attDef ident="material" mode="change" usage="req">
+                <defaultVal>unknown</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="perg"><desc xml:lang="en">parchment</desc><desc xml:lang="de">Pergament</desc></valItem>
+                  <valItem ident="chart"><desc xml:lang="en">paper</desc><desc xml:lang="de">Papier</desc></valItem>
+                  <valItem ident="perg_chart"><desc xml:lang="en">mixture of paper and parchment</desc><desc xml:lang="de">Mischung aus Papier und Pergament</desc></valItem>
+                  <valItem ident="linen"><desc xml:lang="en">linen</desc><desc xml:lang="de">Leinen</desc></valItem>
+                  <valItem ident="mixed"><desc xml:lang="en">mixture of any other materials than paper, papyrus, and parchment</desc><desc xml:lang="de">Mischung aus anderen Materialien als Papier, Papyrus und Pergament</desc></valItem>
+                  <valItem ident="palm"><desc xml:lang="en">palm</desc><desc xml:lang="de">Palmblätter</desc></valItem>
+                  <valItem ident="papyrus"><desc xml:lang="en">papyrus</desc><desc xml:lang="de">Papyrus</desc></valItem>
+                  <valItem ident="papyrus_perg"><desc xml:lang="en">mixture of papyrus and parchment</desc><desc xml:lang="de">Mischung aus Papyrus und Pergament</desc></valItem>
+                  <valItem ident="papyrus_chart"><desc xml:lang="en">mixture of papyrus and paper</desc><desc xml:lang="de">Mischung aus Papyrus und Papier</desc></valItem>
+                  <valItem ident="unknown"><desc xml:lang="en">unknown</desc><desc xml:lang="de">unbekannt</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="term" mode="change" module="core">
+            <desc>The element <gi>term</gi> might be used to encode structural metadata on a manuscript such as physical entities, textual divisions, or special occurrences like annotations or decorative elements. The values are copied from the set of terms for structural metadata for the <ref target="http://dfg-viewer.de/strukturdatenset/">DFG-Viewer</ref>.</desc>
+            <attList>
+              <attDef ident="key" mode="change" usage="rec">
+                <valList type="semi" mode="replace">
+                  <valItem ident="additional"><desc xml:lang="en">additional</desc><desc xml:lang="de">Beilage</desc></valItem>
+                  <valItem ident="address"><desc xml:lang="en">address</desc><desc xml:lang="de">Anrede</desc></valItem>
+                  <valItem ident="annotation"><desc xml:lang="en">annotation</desc><desc xml:lang="de">Annotation</desc></valItem>
+                  <valItem ident="article"><desc xml:lang="en">article</desc><desc xml:lang="de">Artikel</desc></valItem>
+                  <valItem ident="binding"><desc xml:lang="en">binding</desc><desc xml:lang="de">Einband</desc></valItem>
+                  <valItem ident="bookplate"><desc xml:lang="en">bookplate</desc><desc xml:lang="de">Exlibris</desc></valItem>
+                  <valItem ident="chapter"><desc xml:lang="en">chapter</desc><desc xml:lang="de">Kapitel</desc></valItem>
+                  <valItem ident="collation"><desc xml:lang="en">collation</desc><desc xml:lang="de">Bogensignatur</desc></valItem>
+                  <valItem ident="colophon"><desc xml:lang="en">colophon</desc><desc xml:lang="de">Kolophon</desc></valItem>
+                  <valItem ident="contained_work"><desc xml:lang="en">contained work</desc><desc xml:lang="de">Beigefügtes oder Enthaltenes Werk</desc></valItem>
+                  <valItem ident="contents"><desc xml:lang="en">table of contents</desc><desc xml:lang="de">Inhaltsverzeichnis</desc></valItem>
+                  <valItem ident="corrigenda"><desc xml:lang="en">corrigenda</desc><desc xml:lang="de">Errata</desc></valItem>
+                  <valItem ident="cover"><desc xml:lang="en">cover</desc><desc xml:lang="de">Deckel</desc></valItem>
+                  <valItem ident="cover_front"><desc xml:lang="en">front cover</desc><desc xml:lang="de">Vorderdeckel</desc></valItem>
+                  <valItem ident="cover_back"><desc xml:lang="en">back cover</desc><desc xml:lang="de">Rückdeckel</desc></valItem>
+                  <valItem ident="dedication"><desc xml:lang="en">dedication</desc><desc xml:lang="de">Widmung</desc></valItem>
+                  <valItem ident="edge"><desc xml:lang="en">edge</desc><desc xml:lang="de">Schnitt</desc></valItem>
+                  <valItem ident="endsheet"><desc xml:lang="en">endsheet</desc><desc xml:lang="de">Vorsatz</desc></valItem>
+                  <valItem ident="engraved_titlepage"><desc xml:lang="en">engraved titlepage</desc><desc xml:lang="de">Kupfertitel</desc></valItem>
+                  <valItem ident="entry"><desc xml:lang="en">entry</desc><desc xml:lang="de">Eintrag</desc></valItem>
+                  <valItem ident="fascicle"><desc xml:lang="en">fascicle</desc><desc xml:lang="de">Faszikel</desc></valItem>
+                  <valItem ident="fragment"><desc xml:lang="en">fragment</desc><desc xml:lang="de">Fragment</desc></valItem>
+                  <valItem ident="illustration"><desc xml:lang="en">illustration</desc><desc xml:lang="de">Illustration</desc></valItem>
+                  <valItem ident="imprint"><desc xml:lang="en">imprint</desc><desc xml:lang="de">Impressum</desc></valItem>
+                  <valItem ident="index"><desc xml:lang="en">index</desc><desc xml:lang="de">Register</desc></valItem>
+                  <valItem ident="initial_decoration"><desc xml:lang="en">initial decoration</desc><desc xml:lang="de">Initialschmuck</desc></valItem>
+                  <valItem ident="issue"><desc xml:lang="en">issue</desc><desc xml:lang="de">Heft</desc></valItem>
+                  <valItem ident="manuscript"><desc xml:lang="en">manuscript</desc><desc xml:lang="de">Handschrift</desc></valItem>
+                  <valItem ident="map"><desc xml:lang="en">map</desc><desc xml:lang="de">Karte</desc></valItem>
+                  <valItem ident="monograph"><desc xml:lang="en">monograph</desc><desc xml:lang="de">Monographie</desc></valItem>
+                  <valItem ident="multivolume_work"><desc xml:lang="en">multi volume work</desc><desc xml:lang="de">Mehrbändiges Werk</desc></valItem>
+                  <valItem ident="musical_notation"><desc xml:lang="en">musical notation</desc><desc xml:lang="de">Musiknotation</desc></valItem>
+                  <valItem ident="ornament"><desc xml:lang="en">ornament</desc><desc xml:lang="de">Buchschmuck</desc></valItem>
+                  <valItem ident="paste_down"><desc xml:lang="en">paste down</desc><desc xml:lang="de">Spiegel</desc></valItem>
+                  <valItem ident="periodical"><desc xml:lang="en">periodical</desc><desc xml:lang="de">Periodica</desc></valItem>
+                  <valItem ident="preface"><desc xml:lang="en">preface</desc><desc xml:lang="de">Vorwort</desc></valItem>
+                  <valItem ident="printers_mark"><desc xml:lang="en">printers mark</desc><desc xml:lang="de">Druckermarke</desc></valItem>
+                  <valItem ident="privileges"><desc xml:lang="en">privileges</desc><desc xml:lang="de">Privilegien</desc></valItem>
+                  <valItem ident="provenance"><desc xml:lang="en">provenance</desc><desc xml:lang="de">Besitznachweis</desc></valItem>
+                  <valItem ident="scheme"><desc xml:lang="en">scheme</desc><desc xml:lang="de">Schema</desc></valItem>
+                  <valItem ident="section"><desc xml:lang="en">section</desc><desc xml:lang="de">Abschnitt</desc></valItem>
+                  <valItem ident="spine"><desc xml:lang="en">spine</desc><desc xml:lang="de">Rücken</desc></valItem>
+                  <valItem ident="stamp"><desc xml:lang="en">stamp</desc><desc xml:lang="de">Stempel</desc></valItem>
+                  <valItem ident="table"><desc xml:lang="en">table</desc><desc xml:lang="de">Tabelle</desc></valItem>
+                  <valItem ident="text"><desc xml:lang="en">text</desc><desc xml:lang="de">Text</desc></valItem>
+                  <valItem ident="title_page"><desc xml:lang="en">title page</desc><desc xml:lang="de">Titelblatt</desc></valItem>
+                  <valItem ident="verse"><desc xml:lang="en">verse</desc><desc xml:lang="de">Verse</desc></valItem>
+                  <valItem ident="volume"><desc xml:lang="en">volume</desc><desc xml:lang="de">Band</desc></valItem>
+                </valList>
+              </attDef>
+              <attDef ident="type" mode="change" usage="opt">
+                <valList type="semi" mode="replace">
+                  <valItem ident="author"><desc xml:lang="en">The term is the name of an author of a text in the manuscript.</desc></valItem>
+                  <valItem ident="placename"><desc xml:lang="en">The term is the name of a place.</desc></valItem>
+                  <valItem ident="script"><desc xml:lang="en">The term names the script used in the manuscript.</desc></valItem>
+                  <valItem ident="structure"><desc xml:lang="en">The term belongs to the set of structural metadata.</desc></valItem>
+                  <valItem ident="title"><desc xml:lang="en">The term is the title of a text in the manuscript.</desc></valItem>
+                </valList>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec ident="textLang" mode="change" module="msdescription">
+            <attList>
+              <attDef ident="mainLang" mode="change" usage="req"/>
+            </attList>
+          </elementSpec>
+          <!-- constrain date attributes -->
+          <elementSpec ident="date" mode="change" module="core">
+            <constraintSpec ident="date_check" scheme="schematron">
+              <constraint>
+                <s:pattern name="date_values">
+                  <s:rule context="tei:date">
+                    <s:assert test="@when or (@notAfter and @notBefore) or (@from and @to)">You must provide either @when or @to/@from, or @notAfter/@notBefore.</s:assert>
+                  </s:rule>
+                </s:pattern>
+              </constraint>
+            </constraintSpec>
+          </elementSpec>
+          <elementSpec ident="origDate" mode="change" module="msdescription">
+            <constraintSpec ident="origdate_check" scheme="schematron">
+              <constraint>
+                <s:pattern name="date_values">
+                  <s:rule context="tei:origDate">
+                    <s:assert test="@when or (@notAfter and @notBefore) or (@from and @to)">You must provide either @when or @to/@from, or @notAfter/@notBefore.</s:assert>
+                  </s:rule>
+                </s:pattern>
+              </constraint>
+            </constraintSpec>
+          </elementSpec>
+          <!-- remove optional global attribute we don't want to use -->
+          <classSpec ident="att.global" type="atts" mode="change" module="tei">
+            <attList>
+              <attDef ident="rendition" mode="delete"/>
+            </attList>
+          </classSpec>
+          <classSpec ident="att.dimensions" mode="change" type="atts">
+            <attList>
+              <attDef ident="precision" mode="delete"/>
+              <!--
+              <attDef ident="unit" mode="change">
+                <defaultVal>cm</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="chars"><desc>written characters</desc></valItem>
+                  <valItem ident="cm"><desc>centimetres</desc></valItem>
+                  <valItem ident="columns"><desc>columns</desc></valItem>
+                  <valItem ident="in"><desc>inches</desc></valItem>
+                  <valItem ident="leaves"><desc>leaves</desc></valItem>
+                  <valItem ident="lines"><desc>lines</desc></valItem>
+                  <valItem ident="mm"><desc>millimetres</desc></valItem>
+                  <valItem ident="pages"><desc>pages</desc></valItem>
+                  <valItem ident="words"><desc>words</desc></valItem>
+                </valList>
+              </attDef>
+              -->
+            </attList>
+          </classSpec>
+          <classSpec ident="att.handFeatures" type="atts" mode="change" module="tei">
+            <attList>
+              <attDef ident="script" mode="change" usage="rec">
+                <defaultVal>other</defaultVal>
+                <valList type="semi" mode="replace">
+                  <valItem ident="carolmin"><desc xml:lang="de">Karolingische Minuskel</desc></valItem>
+                  <valItem ident="textualis"><desc xml:lang="de">Textualis</desc></valItem>
+                  <valItem ident="cursiva"><desc xml:lang="de">Kursive</desc></valItem>
+                  <valItem ident="hybrida"/>
+                  <valItem ident="humbook"><desc xml:lang="de">Humanistische Buchschrift</desc></valItem>
+                  <valItem ident="humcursiva"><desc xml:lang="de">Humanistische Kursive</desc></valItem>
+                  <valItem ident="kanzlei"><desc xml:lang="de">Kanzlei</desc></valItem>
+                  <valItem ident="kurrent"><desc xml:lang="de">Kurrent</desc></valItem>
+                  <!-- following values added by HAB -->
+                  <valItem ident="capquad"><desc xml:lang="la">Capitalis quadrata</desc></valItem>
+                  <valItem ident="caprust"><desc xml:lang="la">Capitalis rustica</desc></valItem>
+                  <valItem ident="uncialis"><desc xml:lang="la">Uncialis</desc></valItem>
+                  <valItem ident="semiunc"><desc xml:lang="la">Semiuncialis</desc></valItem>
+                  <valItem ident="benevent"><desc xml:lang="la">Beneventana</desc></valItem>
+                  <valItem ident="luxeuil"><desc xml:lang="de">Luxueil-Schrift</desc></valItem>
+                  <valItem ident="corbie"><desc xml:lang="de">Corbie-Schrift</desc></valItem>
+                  <valItem ident="insulmin"><desc xml:lang="de">Insulare Minuskel</desc></valItem>
+                  <valItem ident="alemmin"><desc xml:lang="de">Alemannische Minuskel</desc></valItem>
+                  <valItem ident="raetmin"><desc xml:lang="de">Rätische Minuskel</desc></valItem>
+                  <valItem ident="carolgot"><desc xml:lang="la">Carolino Gothica</desc></valItem>
+                  <valItem ident="gotant"><desc xml:lang="la">Gothico-Antiqua</desc></valItem>
+                  <valItem ident="textura"><desc xml:lang="la">Textura</desc></valItem>
+                  <valItem ident="rotunda"><desc xml:lang="la">Rotunda</desc></valItem>
+                  <valItem ident="cancell"><desc xml:lang="la">Cancelleresca</desc></valItem>
+                  <valItem ident="bastarda"><desc xml:lang="la">Bastarda</desc></valItem>
+                  <valItem ident="cursantic"><desc xml:lang="la">Cursiva antiquior</desc><desc xml:lang="de">ältere gotische Kursive</desc></valItem>
+                  <valItem ident="cursrecent"><desc xml:lang="la">Cursiva recentior</desc><desc xml:lang="de">jüngere gotische Kursive</desc></valItem>
+                  <valItem ident="antiqua"><desc xml:lang="de">Antiqua Kursive</desc></valItem>
+                  <!-- end added values -->
+                  <valItem ident="other"><desc>any other type of script</desc></valItem>
+                  <valItem ident="unknown"><desc>script information not available</desc></valItem>
+                </valList>
+              </attDef>
+              <attDef ident="scope" mode="change" usage="rec">
+                <defaultVal>sole</defaultVal>
+                <valList type="closed" mode="replace">
+                  <valItem ident="sole"/>
+                  <valItem ident="major"/>
+                  <valItem ident="minor"/>
+                  <valItem ident="unknown"/>
+                </valList>
+              </attDef>
+            </attList>
+          </classSpec>
+          <!-- remove stupid (non-mandatory) elements we dont want in this place -->
+          <!-- remove option of change within history -->
+          <!-- for what reason has this been removed? it sounds reasonible to me to have <change>-->
+          <elementSpec xmlns:rng="http://relaxng.org/ns/structure/1.0" module="msdescription" ident="recordHist" mode="change">
+            <content>
+              <rng:choice>
+                <rng:oneOrMore>
+                  <rng:ref name="model.pLike"/>
+                </rng:oneOrMore>
+                <rng:ref name="source"/>
+              </rng:choice>
+            </content>
+          </elementSpec>
+          <!-- change wording of desc to be less confusing -->
+          <elementSpec ident="surrogates" mode="change" module="msdescription">
+            <desc>contains information about any non-digital representations of the manuscript being described which may exist in the holding institution or elsewhere. </desc>
+          </elementSpec>
+          <!--
+          <elementSpec xmlns:rng="http://relaxng.org/ns/structure/1.0" ident="include" ns="http://www.w3.org/2001/XInclude" mode="add">
+            <desc>The W3C XInclude element</desc>
+            <classes>
+              <memberOf key="model.common"/>
+              <memberOf key="model.headerPart"/>
+            </classes>
+            <content>
+              <rng:optional>
+                <rng:ref name="fallback"/>
+              </rng:optional>
+            </content>
+            <attList>
+              <attDef ident="href">
+                <desc>pointer to the resource being included</desc>
+                <datatype>
+                  <rng:ref name="data.pointer"/>
+                </datatype>
+              </attDef>
+              <attDef ident="parse" usage="opt">
+                <defaultVal>xml</defaultVal>
+                <valList type="closed">
+                  <valItem ident="xml"/>
+                  <valItem ident="text"/>
+                </valList>
+              </attDef>
+              <attDef ident="xpointer" usage="opt">
+                <datatype>
+                  <rng:text/>
+                </datatype>
+              </attDef>
+              <attDef ident="encoding" usage="opt">
+                <datatype>
+                  <rng:text/>
+                </datatype>
+              </attDef>
+              <attDef ident="accept" usage="opt">
+                <datatype>
+                  <rng:text/>
+                </datatype>
+              </attDef>
+              <attDef ident="accept-charset" usage="opt">
+                <datatype>
+                  <rng:text/>
+                </datatype>
+              </attDef>
+              <attDef ident="accept-language" usage="opt">
+                <datatype>
+                  <rng:text/>
+                </datatype>
+              </attDef>
+            </attList>
+          </elementSpec>
+          <elementSpec xmlns:rng="http://relaxng.org/ns/structure/1.0" ident="fallback" ns="http://www.w3.org/2001/XInclude" mode="add">
+            <desc>Wrapper for fallback elements if an XInclude fails</desc>
+            <content>
+              <oneOrMore xmlns="http://relaxng.org/ns/structure/1.0">
+                <choice>
+                  <text/>
+                  <ref name="macro.anyThing"/>
+                </choice>
+              </oneOrMore>
+            </content>
+          </elementSpec>
+          <macroSpec ident="macro.anyThing" mode="add">
+            <content><?NameList?></content>
+          </macroSpec>
+          -->
+        </schemaSpec>
+      </div>
+    </body>
+  </text>
+</TEI>
