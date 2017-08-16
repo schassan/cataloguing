@@ -5,7 +5,7 @@
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
   <xs:element name="egXML">
     <xs:annotation>
-      <xs:documentation>(example of XML) a single XML fragment demonstrating the use of some XML element or attribute, in which the egXML element functions as the root element. [22.1.1. Phrase Level Terms]</xs:documentation>
+      <xs:documentation>(example of XML) a single XML fragment demonstrating the use of some XML, such as elements, attributes, or processing instructions, etc., in which the egXML element functions as the root element. [22.1.1. Phrase Level Terms]</xs:documentation>
     </xs:annotation>
     <xs:complexType mixed="true">
       <xs:group minOccurs="0" maxOccurs="unbounded" ref="tei:anyElement-egXML"/>

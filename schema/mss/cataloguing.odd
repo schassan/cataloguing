@@ -25,6 +25,8 @@
       </sourceDesc>
     </fileDesc>
     <revisionDesc xml:id="revDesc">
+      <change who="#ts" when="2017-04-24">added values for <att>type</att> on <gi>dimensions</gi>.</change>
+      <change who="#ts" when="2017-04-21">made <att>scriptRef</att> obligatory on <gi>scriptNote</gi>.</change>
       <change who="#ts" when="2017-02-14">added values for <att>type</att> on <gi>ref</gi> and <gi>ptr</gi>.</change>
       <change who="#ts" when="2015-08-28">added values for <att>form</att> on <gi>objectDesc</gi>; added values for <att>role</att> on <gi>rs</gi>.</change>
       <change who="#ts" when="2013-03-05">added <val>facsimile</val>, <val>listBibl</val>, <val>listEvent</val>, <val>listOrg</val>, <val>listPerson</val>, and <val>listPlace</val> to the list of possible start elements of a TEI file (<tag>schemaSpec start=""</tag>).</change>
@@ -34,7 +36,7 @@
       <change who="#ts" when="2011-02-08">made <att>xml:id</att> obligatory on <gi>scriptNote</gi>.</change>
       <change who="#ts" when="2011-02-08">moved the definition from <att>script</att> of <gi>handNote</gi> to <att>att.handFeatures</att>.</change>
       <change who="#ts" when="2011-02-01">added predefined terms for the attribute <att>target</att> on the element <gi>term</gi></change>
-      <change who="#ts">many added to <att>script</att> of <gi>handNote</gi>.</change>
+      <change who="#ts">many values added to <att>script</att> of <gi>handNote</gi>.</change>
       <change who="#ts"><val>accession</val>, <val>alternative</val>, <val>catalog</val>, <val>erroneous</val>, <val>multivolume</val> and <val>palimpsest</val> are added to the list of possible values for <att>type</att> of <gi>altIdentifier</gi>.</change>
       <change who="#ts">list of values of <att>type</att> of <gi>measure</gi> adopted.</change>
       <change who="#ts"><val>unknown</val> added to <att>scope</att> of <gi>handNote</gi>. The attribute has been made recommended.</change>
@@ -347,7 +349,10 @@
                   <valItem ident="binding"/>
                   <valItem ident="boxed"/>
                   <valItem ident="illustration"/>
-                  <valItem ident="leaf"/>
+                  <valItem ident="leaf"/><desc>Value deprecated in favour of the use of either <val>leaf_orig</val>, <val>leaf_current</val> or <val>leaf_current-right</val>.</desc>
+                  <valItem ident="leaf_orig"><desc>Value especially meant for fragments or codices that have been cut. The value shall estimate the original size of a leaf.</desc></valItem>
+                  <valItem ident="leaf_current"><desc>Value especially meant for fragments or codices that have been cut. The value shall give the current size of the fragment as a whole.</desc></valItem>
+                  <valItem ident="leaf_current-right"><desc>Value especially meant for fragments and folded. The value shall give the current size of the right side of the folded fragment.</desc></valItem>
                   <valItem ident="slip"/>
                   <valItem ident="written"/>
                   <valItem ident="unknown"/>
@@ -610,6 +615,7 @@
           <elementSpec ident="scriptNote" module="header" mode="change">
             <attList>
               <attDef ident="xml:id" mode="change" usage="rec"/>
+            <attDef ident="scriptRef" mode="change" usage="req"/>
             </attList>
           </elementSpec>
           <elementSpec ident="supplied" mode="change" module="transcr">
@@ -738,8 +744,19 @@
               </constraint>
             </constraintSpec>
           </elementSpec>
+          <elementSpec ident="rs" mode="change" module="core">
+            <constraintSpec ident="rs_check" scheme="schematron">
+              <constraint>
+                <s:pattern name="rs_values">
+                  <s:rule context="tei:rs">
+                    <s:assert test="@type[.='person'] and @role">When @type='person' then @role should be given.</s:assert>
+                  </s:rule>
+                </s:pattern>
+              </constraint>
+            </constraintSpec>
+          </elementSpec>
           <!-- remove optional global attribute we don't want to use -->
-          <classSpec ident="att.global" type="atts" mode="change" module="tei">
+          <classSpec ident="att.global.rendition" type="atts" mode="change" module="tei">
             <attList>
               <attDef ident="rendition" mode="delete"/>
             </attList>
