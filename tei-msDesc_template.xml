@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TEI xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.tei-c.org/ns/1.0 schema/mss/cataloguing.xsd"
- xmlns="http://www.tei-c.org/ns/1.0" version="5.1" xml:lang="de"
- xml:id="{institution}_{collection}_{idno}_tei-msDesc_{author}">
+ xmlns="http://www.tei-c.org/ns/1.0" 
+ version="{TEI-Guidelines-Version number}" 
+ xml:lang="{2-digits}"
+ xml:id="{place}_{institution}_{collection}_{idno}_tei-msDesc_{author}">
 	<teiHeader>
 		<fileDesc>
 			<titleStmt>
@@ -25,13 +27,14 @@
 					<name type="org"><!-- your institution --></name>
 					<ptr target="{homepage of your institution}"/>
 				</publisher>
-				<date when="20xx" type="issued"/>
-				<date when="20xx" type="digitised"/>
+				<date when="{someDate}" type="issued"/>
+				<date when="{someDate}" type="digitised"/>
 				<distributor><!-- your institution --></distributor>
 				<availability status="restricted">
-					<licence target="{license URL, e.g. http://creativecommons.org/licenses/by-sa/3.0/}">
-						<p><!-- remarks on the license applied --></p>
-						<p><!-- further information on the licensing, e.g. <ref target="{url}">Copyright Information</ref> --></p>
+					<!-- one licence per aspect, e.g. for digitalised images, catalogues, etc -->
+					<licence target="{licence URL, e.g. http://creativecommons.org/licenses/by-sa/3.0/}">
+						<p><!-- remarks on the licence applied --></p>
+						<p><!-- further information on the licencing, e.g. <ref target="{url}">Copyright Information</ref> --></p>
 					</licence>
 				</availability>
 				<pubPlace>
@@ -50,16 +53,16 @@
 			</projectDesc>
 		</encodingDesc>
 		<profileDesc>
-			<!-- if the object is a letter add a profileDesc -->
+			<!-- if the object is a letter add a correspDesc -->
 			<!--
 			<correspDesc>
 				<correspAction type="sent">
-					<persName ref="#someID"></persName>
+					<persName ref="#{someID}"></persName>
 					<settlement>Berlin</settlement>
 					<date when=""></date>
 				</correspAction>
 				<correspAction type="received">
-					<persName ref="#someID"></persName>
+					<persName ref="#{someID}"></persName>
 					<settlement></settlement>
 					<date></date>
 				</correspAction>
@@ -67,7 +70,7 @@
 			-->
 			<textClass>
 				<keywords scheme="#someReferenceToScheme">
-					<term xml:lang="de"><!-- basic classification of the contents --></term>
+					<term xml:lang="{2-digits}"><!-- basic classification of the contents or the manuscript --></term>
 				</keywords>
 			</textClass>
 		</profileDesc>
@@ -79,55 +82,60 @@
 	</teiHeader>
 	<text>
 		<body>
-			<msDesc xml:id="{collection}_{idno}_tei-msDesc_{author}" xml:lang="de">
+			<msDesc xml:id="{collection}_{idno}_tei-msDesc_{author}" xml:lang="{2-digits}">
 				<msIdentifier>
 					<settlement><!-- your city --></settlement>
 					<repository rend="{shortForm}" ref="ISIL:{isil}"><!-- name if the institution --></repository>
 					<idno sortKey="some-sortKey"><!-- shelfmark of the object --></idno>
 					<!-- some catalog oder alternative writing of shelfmark -->
-					<altIdentifier type="alternative">
-						<collection><!-- name of the catalogue --></collection>
+					<altIdentifier type="{someType}">
+						<collection><!-- if @type='catalog' then name of the catalogue --></collection>
 						<idno sortKey="{catalog-0000}"><!-- catalogue number --></idno>
 					</altIdentifier>
 				</msIdentifier>
 				<head>
 					<title></title>
 					<!-- if place of origin is known specifically, @ref should be supplied -->
-					<origPlace ref="someID"></origPlace>
+					<origPlace ref="#someID"></origPlace>
 					<!-- the following options to supply a date of origin are mutual exclusive -->
 					<origDate when=""><!-- for dated mss, exact date --></origDate>
 					<origDate from="" to=""><!-- for dated mss, a certain period --></origDate>
 					<origDate notBefore="" notAfter=""><!-- for datable mss --></origDate>
 				</head>
 				<msContents>
-					<textLang mainLang="{2-digits}" otherLangs=""><!-- cf. ISO 639-2 resp. -3 --></textLang>
+					<textLang mainLang="{2-or-3-digits}" otherLangs="{multiple entries divided by space}"><!-- cf. ISO 639-2 resp. -3 --></textLang>
+					<!-- repeat <msItem> as often as needed, one per text -->
 					<msItem>
 						<locus from="" to=""></locus>
-						<author ref="#someID"></author>
+						<author ref="#{someID}"></author>
 						<title></title>
 						<rubric xml:lang=""></rubric>
 						<incipit xml:lang=""></incipit>
 						<explicit xml:lang=""></explicit>
 						<finalRubric xml:lang=""></finalRubric>
 						<colophon xml:lang=""></colophon>
+						<filiation></filiation>
+						<textLang mainLang=""></textLang>
+						<listBibl>
+							<bibl><ref type="bibliography" target=""><!-- abrreviated title, at the same time reference to a listBibl --></ref></bibl>
+						</listBibl>
 					</msItem>
 				</msContents>
-				
 				<physDesc>
-					<objectDesc form="codex">
-						<supportDesc material="perg">
+					<objectDesc form="">
+						<supportDesc material="">
 							<support>
 								<p><material></material></p>
-								<p>Wasserzeichen: <watermark></watermark>: <bibl><abbr>Piccard-Online</abbr> <ref type="Piccard-Online" cRef=""></ref></bibl> ()</p>
+								<p>Wasserzeichen: <watermark></watermark>: <bibl><abbr>WZIS</abbr> <ref type="wzis" cRef=""></ref></bibl> ()</p>
 							</support>
 							<extent>
 								<measure type="leavesCount"></measure>
-								<dimensions type="leaf" unit="cm">
+								<dimensions type="leaf_current" unit="cm">
 									<height></height>
 									<width></width>
 									<depth></depth>
 								</dimensions>
-								<measure type="format"><!-- e.g., 2° or fol.--></measure>
+								<measure type="format" n=""><!-- e.g., 2° or fol.--></measure>
 							</extent>
 							<foliation></foliation>
 							<collation><formula></formula></collation>
@@ -142,24 +150,25 @@
 										<height></height>
 										<width></width>
 									</dimensions>
+									<!-- more text here, e.g. for number of columns, written lines, etc. -->
 								</p>
 							</layout>
 						</layoutDesc>
 					</objectDesc>
 					<handDesc hands="">
 						<summary></summary>
-						<handNote scribe="#someID" script="{scriptName}" medium="" scope="">
+						<handNote scribeRef="#{someID}" scriptRef="#{someID}">
 							<p></p>
 						</handNote>
 					</handDesc>
 					<scriptDesc>
 						<summary></summary>
-						<scriptNote script="{scriptName}"><p></p></scriptNote>
+						<scriptNote scriptRef="#{someID}"><p></p></scriptNote>
 					</scriptDesc>
 					<musicNotation></musicNotation>
 					<decoDesc>
 						<summary></summary>
-						<decoNote type="{someTypology}"></decoNote>
+						<decoNote type="#{someTypology}"><rs type="person" role=""></rs></decoNote>
 					</decoDesc>
 					<additions><!-- for textual additions --></additions>
 					<bindingDesc>
@@ -170,6 +179,7 @@
 					<accMat type=""><!-- for material additions except fragments --></accMat>
 				</physDesc>
 				<history>
+					<summary></summary>
 					<origin>
 						<p></p>
 					</origin>
