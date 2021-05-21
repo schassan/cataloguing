@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.tei-c.org/ns/Examples" xmlns:dcr="http://www.isocat.org/ns/dcr" xmlns:tei="http://www.tei-c.org/ns/1.0" xmlns:teix="http://www.tei-c.org/ns/Examples">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.tei-c.org/ns/Examples" xmlns:dcr="http://www.isocat.org/ns/dcr" xmlns:teix="http://www.tei-c.org/ns/Examples" xmlns:xinclude="http://www.w3.org/2001/XInclude" xmlns:tei="http://www.tei-c.org/ns/1.0">
   <xs:import namespace="http://www.isocat.org/ns/dcr" schemaLocation="dcr.xsd"/>
-  <xs:import namespace="http://www.tei-c.org/ns/1.0" schemaLocation="cataloguing.xsd"/>
+  <xs:import namespace="http://www.tei-c.org/ns/1.0" schemaLocation="document.xsd"/>
+  <xs:import namespace="http://www.w3.org/2001/XInclude" schemaLocation="xinclude.xsd"/>
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
   <xs:element name="egXML">
-    <xs:annotation>
-      <xs:documentation>(example of XML) a single XML fragment demonstrating the use of some XML, such as elements, attributes, or processing instructions, etc., in which the egXML element functions as the root element. [22.1.1. Phrase Level Terms]</xs:documentation>
-    </xs:annotation>
     <xs:complexType mixed="true">
       <xs:group minOccurs="0" maxOccurs="unbounded" ref="tei:anyElement-egXML"/>
       <xs:attributeGroup ref="tei:TEI_att.global.attributes"/>

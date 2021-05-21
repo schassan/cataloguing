@@ -88,7 +88,7 @@
 					<repository rend="{shortForm}" ref="ISIL:{isil}"><!-- name if the institution --></repository>
 					<idno sortKey="some-sortKey"><!-- shelfmark of the object --></idno>
 					<!-- some catalog oder alternative writing of shelfmark -->
-					<altIdentifier type="{someType}">
+					<altIdentifier type="">
 						<collection><!-- if @type='catalog' then name of the catalogue --></collection>
 						<idno sortKey="{catalog-0000}"><!-- catalogue number --></idno>
 					</altIdentifier>

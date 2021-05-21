@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <TEI 
-  xmlns="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" xmlns:s="http://www.ascc.net/xml/schematron" 
+  xmlns="http://www.tei-c.org/ns/1.0" xmlns:rng="http://relaxng.org/ns/structure/1.0" 
+  xmlns:sch="http://purl.oclc.org/dsdl/schematron"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
   xmlns:xi="http://www.w3.org/2001/XInclude" 
   xml:lang="en" n="cataloguing">
@@ -241,7 +242,7 @@
           <!-- constrain attribute values for several elements and also supply defaults -->
           <elementSpec ident="altIdentifier" module="msdescription" mode="change">
             <attList>
-              <attDef ident="type" mode="change" usage="req">
+              <attDef ident="type" mode="change" usage="rec">
                 <defaultVal>catalog</defaultVal>
                 <valList type="closed" mode="replace">
                   <valItem ident="accession"><desc>accession number</desc></valItem>
@@ -278,7 +279,7 @@
           </elementSpec>
           <elementSpec ident="availability" mode="change" module="header">
             <attList>
-              <attDef ident="status" mode="change" usage="req">
+              <attDef ident="status" mode="change" usage="rec">
                 <defaultVal>unknown</defaultVal>
                 <valList type="closed" mode="replace">
                   <valItem ident="free"/>
@@ -290,7 +291,7 @@
           </elementSpec>
           <elementSpec ident="biblScope" mode="change" module="core">
             <attList>
-              <attDef ident="type" mode="change" usage="req">
+              <attDef ident="type" mode="change" usage="rec">
                 <defaultVal>pages</defaultVal>
                 <valList type="semi" mode="replace">
                   <valItem ident="column"/>
@@ -343,13 +344,13 @@
           </elementSpec>
           <elementSpec ident="dimensions" mode="change" module="msdescription">
             <attList>
-              <attDef ident="type" mode="change" usage="req">
+              <attDef ident="type" mode="change" usage="rec">
                 <defaultVal>unknown</defaultVal>
                 <valList type="semi" mode="replace">
                   <valItem ident="binding"/>
                   <valItem ident="boxed"/>
                   <valItem ident="illustration"/>
-                  <valItem ident="leaf"/><desc>Value deprecated in favour of the use of either <val>leaf_orig</val>, <val>leaf_current</val> or <val>leaf_current-right</val>.</desc>
+                  <valItem ident="leaf"><desc>Value deprecated in favour of the use of either <val>leaf_orig</val>, <val>leaf_current</val> or <val>leaf_current-right</val>.</desc></valItem>
                   <valItem ident="leaf_orig"><desc>Value especially meant for fragments or codices that have been cut. The value shall estimate the original size of a leaf.</desc></valItem>
                   <valItem ident="leaf_current"><desc>Value especially meant for fragments or codices that have been cut. The value shall give the current size of the fragment as a whole.</desc></valItem>
                   <valItem ident="leaf_current-right"><desc>Value especially meant for fragments and folded. The value shall give the current size of the right side of the folded fragment.</desc></valItem>
@@ -407,7 +408,6 @@
           <elementSpec ident="measure" mode="change" module="core">
             <attList>
               <attDef ident="type" mode="change" usage="req">
-                <defaultVal>unknown</defaultVal>
                 <valList type="semi" mode="replace">
                   <valItem ident="currency"/>
                   <valItem ident="leavesCount"/>
@@ -445,8 +445,28 @@
           <elementSpec ident="msDesc" mode="change" module="msdescription">
             <attList>
               <attDef ident="xml:id" mode="change" usage="req"/>
-              <attDef ident="xml:lang" mode="change" usage="req">
-                <defaultVal>de</defaultVal>
+              <attDef ident="xml:lang" mode="change" usage="req"/>
+              <attDef ident="type" mode="replace" usage="rec">
+                <valList type="closed" mode="replace">
+                  <valItem ident="hsp:object">
+                    <desc xml:lang="en">The TEI file represents (and contains) a <soCalled>Cultural
+                      Object Document</soCalled></desc>
+                    <desc xml:lang="de">Die TEI-Datei repräsentiert und enthält ein <soCalled>Kultur
+                      Objekt Dokument</soCalled>.</desc>
+                  </valItem>
+                  <valItem ident="hsp:description">
+                    <desc xml:lang="en">The TEI file represents (and contains) a manuscript
+                      description</desc>
+                    <desc xml:lang="de">Die TEI-Datei repräsentiert und enthält eine
+                      Handschriftenbeschreibung</desc>
+                  </valItem>
+                </valList>
+              </attDef>
+              <attDef ident="subtype" mode="replace" usage="rec">
+                <valList type="closed" mode="replace">
+                  <valItem ident="medieval"/>                 
+                  <valItem ident="illuminated"/>
+                </valList>
               </attDef>
             </attList>
           </elementSpec>
@@ -467,16 +487,71 @@
           <elementSpec ident="objectDesc" mode="change" module="msdescription">
             <attList>
               <attDef ident="form" mode="change" usage="req">
-                <defaultVal>codex</defaultVal>
                 <valList type="closed" mode="replace">
-                  <valItem ident="codex"><desc>a bound codex</desc></valItem>
-                  <valItem ident="charter"><desc>a charter</desc></valItem>
-                  <valItem ident="fascicle"><desc>part of a bound codex with its own history</desc></valItem>
-                  <valItem ident="fragment"><desc>a fragment of a codex</desc></valItem>
-                  <valItem ident="leaf"><desc>a loose leaf</desc></valItem>
-                  <valItem ident="letter"><desc>a letter, possibly part of a bound codex now, i.e. a composite manuscript</desc></valItem>
-                  <valItem ident="scroll"><desc>a scroll</desc></valItem>
-                  <valItem ident="other"><desc>any other format</desc></valItem>
+                  <!-- values to be used at manuscript level, in order of frequency -->
+                  <valItem ident="codex">
+                    <desc xml:lang="en">codex; a handwritten object that originally hab a binding of some kind. The binding might have been lost.</desc>
+                    <desc xml:lang="de">Codex; ein handgeschriebenes Objekt, das ursprünglich eine Bindung hatte. Die Einband kann verloren gegangen sein.</desc>
+                  </valItem>
+                  <valItem ident="collection">
+                    <desc xml:lang="en">a collection of single items, to be described further as cultural object components</desc>
+                    <desc xml:lang="de">Sammlung; eine Sammlung von Objekten, die als Kulturobjekt-Komponenten weiter beschrieben werden</desc>
+                  </valItem>
+                  <valItem ident="composite">
+                    <desc xml:lang="en">a composite manuscript which consists of a number of booklets, to be described further as cultural object components</desc>
+                    <desc xml:lang="de">eine zusammengesetzte Handschrift, die aus mehreren kodikologischen Einheiten besteht, die als Kulturobjekt-Komponenten weiter beschrieben werden</desc>
+                  </valItem>
+                  <valItem ident="leporello">
+                    <desc xml:lang="en">a fanfolded manuscript</desc>
+                    <desc xml:lang="de">Leporello, Faltbuch</desc>
+                  </valItem>
+                  <valItem ident="sammelband">
+                    <desc xml:lang="en">sammelband; a mixture of handwritten and printed texts</desc>
+                    <desc xml:lang="de">Sammelband; Mischung aus handschriftlichen und gedruckten Materialien</desc>
+                  </valItem>
+                  <valItem ident="fragment">
+                    <desc xml:lang="en">a fragment (of a codex)</desc>
+                    <desc xml:lang="de"> Fragment, Überrest eines zerstörten ursprünglichen Zusammenhangs, wenn auf oberster Ebene; in situ bei Handschriftenteilen</desc>
+                  </valItem>
+                  <valItem ident="singleSheet">
+                    <desc xml:lang="en">a single sheet manuscript</desc>
+                    <desc xml:lang="de">Einblatthandschrift</desc>
+                  </valItem>
+                  <valItem ident="printWithManuscriptParts">
+                    <desc xml:lang="en">a volume that consists mainly of printed work but has additional pages of handwritten material or a major amount of annotations written by hand</desc>
+                    <desc xml:lang="de">Druck mit handschriftlichen Anteilen</desc>
+                  </valItem>
+                  <valItem ident="hostVolume">
+                    <desc xml:lang="en">a volume that consists of one or more printed works but contains manuscript fragments in the binding or as pastedowns</desc>
+                    <desc xml:lang="de">Trägerband; ein Band der aus einem oder mehreren Drucken zusammengesetzt ist und in dem Fragmente in der Bindung verwendet worden sind</desc>
+                  </valItem>
+                  <valItem ident="scroll">
+                    <desc xml:lang="en">a scroll</desc>
+                    <desc xml:lang="de">Rotulus</desc>
+                  </valItem>
+                  <valItem ident="other">
+                    <desc xml:lang="en">any other form</desc>
+                    <desc xml:lang="de">sonstige Form</desc>
+                  </valItem>
+                  <valItem ident="unknown">
+                    <desc xml:lang="en">unknown form</desc>
+                    <desc xml:lang="de">unbekannte Form</desc>
+                  </valItem>
+                  <!-- values to be used at msPart level, in order of frequency -->
+                  <valItem ident="booklet">
+                    <desc xml:lang="en">Booklet; handwritten part of a bound codex with its own history</desc>
+                    <desc xml:lang="de">Faszikel (handschriftl.)</desc>
+                  </valItem>
+                  <valItem ident="print">
+                    <desc xml:lang="en">print; part of a sammelband</desc>
+                    <desc xml:lang="de">Druck in einem Sammelband</desc>
+                  </valItem>
+                  <!-- if we describe binding as a separate component
+                  -->
+                  <valItem ident="binding">
+                    <desc xml:lang="en">binding</desc>
+                    <desc xml:lang="de">Einband</desc>
+                  </valItem>
                 </valList>
               </attDef>
             </attList>
@@ -601,7 +676,6 @@
                 </valList>
               </attDef>
               <attDef ident="type" mode="change" usage="req">
-                <defaultVal>unknown</defaultVal>
                 <valList type="semi" mode="replace">
                   <valItem ident="person"><desc>the name of a person</desc></valItem>
                   <valItem ident="place"><desc>the name of a place</desc></valItem>
@@ -634,11 +708,13 @@
           <elementSpec ident="supportDesc" mode="change" module="msdescription">
             <attList>
               <attDef ident="material" mode="change" usage="req">
-                <defaultVal>unknown</defaultVal>
                 <valList type="semi" mode="replace">
-                  <valItem ident="perg"><desc xml:lang="en">parchment</desc><desc xml:lang="de">Pergament</desc></valItem>
-                  <valItem ident="chart"><desc xml:lang="en">paper</desc><desc xml:lang="de">Papier</desc></valItem>
-                  <valItem ident="perg_chart"><desc xml:lang="en">mixture of paper and parchment</desc><desc xml:lang="de">Mischung aus Papier und Pergament</desc></valItem>
+                  <valItem ident="parch"><desc xml:lang="en">parchment; the attribute value 'perg' has been deprecated</desc><desc xml:lang="de">Pergament; der Attributwert 'perg' ist veraltet</desc></valItem>
+                  <valItem ident="paper"><desc xml:lang="en">paper; the attribute value 'chart' has been deprecated</desc><desc xml:lang="de">Papier; der Wert 'chart' ist veraltet</desc></valItem>
+                  <valItem ident="parch_paper"><desc xml:lang="en">mixture of paper and parchment; the attribute value 'perg_chart' has been deprecated</desc><desc xml:lang="de">Mischung aus Papier und Pergament; der Attributwert 'perg_chart' ist veraltet</desc></valItem>
+                  <valItem ident="perg"><desc xml:lang="en">parchment; attribute value has been deprecated</desc><desc xml:lang="de">Pergament; der Attributwert ist veraltet</desc></valItem>
+                  <valItem ident="chart"><desc xml:lang="en">paper; attribute value has been deprecated</desc><desc xml:lang="de">Papier; der Attributwert ist veraltet</desc></valItem>
+                  <valItem ident="perg_chart"><desc xml:lang="en">mixture of paper and parchment; attribute value has been deprecated</desc><desc xml:lang="de">Mischung aus Papier und Pergament; der Attributwert ist veraltet</desc></valItem>
                   <valItem ident="linen"><desc xml:lang="en">linen</desc><desc xml:lang="de">Leinen</desc></valItem>
                   <valItem ident="mixed"><desc xml:lang="en">mixture of any other materials than paper, papyrus, and parchment</desc><desc xml:lang="de">Mischung aus anderen Materialien als Papier, Papyrus und Pergament</desc></valItem>
                   <valItem ident="palm"><desc xml:lang="en">palm</desc><desc xml:lang="de">Palmblätter</desc></valItem>
@@ -725,33 +801,33 @@
           <elementSpec ident="date" mode="change" module="core">
             <constraintSpec ident="date_check" scheme="schematron">
               <constraint>
-                <s:pattern name="date_values">
-                  <s:rule context="tei:date">
-                    <s:assert test="@when or (@notAfter and @notBefore) or (@from and @to)">You must provide either @when or @to/@from, or @notAfter/@notBefore.</s:assert>
-                  </s:rule>
-                </s:pattern>
+                <sch:pattern name="date_values">
+                  <sch:rule context="tei:date">
+                    <sch:assert test="@when or (@notAfter and @notBefore) or (@from and @to)">You must provide either @when or @to/@from, or @notAfter/@notBefore.</sch:assert>
+                  </sch:rule>
+                </sch:pattern>
               </constraint>
             </constraintSpec>
           </elementSpec>
           <elementSpec ident="origDate" mode="change" module="msdescription">
             <constraintSpec ident="origdate_check" scheme="schematron">
               <constraint>
-                <s:pattern name="date_values">
-                  <s:rule context="tei:origDate">
-                    <s:assert test="@when or (@notAfter and @notBefore) or (@from and @to)">You must provide either @when or @to/@from, or @notAfter/@notBefore.</s:assert>
-                  </s:rule>
-                </s:pattern>
+                <sch:pattern name="date_values">
+                  <sch:rule context="tei:origDate">
+                    <sch:assert test="@when or (@notAfter and @notBefore) or (@from and @to)">You must provide either @when or @to/@from, or @notAfter/@notBefore.</sch:assert>
+                  </sch:rule>
+                </sch:pattern>
               </constraint>
             </constraintSpec>
           </elementSpec>
           <elementSpec ident="rs" mode="change" module="core">
             <constraintSpec ident="rs_check" scheme="schematron">
               <constraint>
-                <s:pattern name="rs_values">
-                  <s:rule context="tei:rs">
-                    <s:assert test="@type[.='person'] and @role">When @type='person' then @role should be given.</s:assert>
-                  </s:rule>
-                </s:pattern>
+                <sch:pattern name="rs_values">
+                  <sch:rule context="tei:rs">
+                    <sch:assert test="@type[.='person'] and @role">When @type='person' then @role should be given.</sch:assert>
+                  </sch:rule>
+                </sch:pattern>
               </constraint>
             </constraintSpec>
           </elementSpec>
@@ -848,23 +924,23 @@
           <elementSpec ident="surrogates" mode="change" module="msdescription">
             <desc>contains information about any non-digital representations of the manuscript being described which may exist in the holding institution or elsewhere. </desc>
           </elementSpec>
-          <!--
-          <elementSpec xmlns:rng="http://relaxng.org/ns/structure/1.0" ident="include" ns="http://www.w3.org/2001/XInclude" mode="add">
-            <desc>The W3C XInclude element</desc>
+
+          <!-- Include XInclude into our schema -->
+          <elementSpec ident="include" ns="http://www.w3.org/2001/XInclude" mode="add">
+            <desc xml:lang="en" versionDate="2014-01-12">The W3C XInclude element</desc>
             <classes>
               <memberOf key="model.common"/>
-              <memberOf key="model.headerPart"/>
+              <memberOf key="model.teiHeaderPart"/>
             </classes>
             <content>
-              <rng:optional>
-                <rng:ref name="fallback"/>
-              </rng:optional>
+              <elementRef key="fallback" minOccurs="0" maxOccurs="1"/>
             </content>
             <attList>
               <attDef ident="href">
-                <desc>pointer to the resource being included</desc>
+                <desc xml:lang="en" versionDate="2014-01-12">pointer to the resource being
+                  included</desc>
                 <datatype>
-                  <rng:ref name="data.pointer"/>
+                  <dataRef key="teidata.pointer"/>
                 </datatype>
               </attDef>
               <attDef ident="parse" usage="opt">
@@ -876,46 +952,41 @@
               </attDef>
               <attDef ident="xpointer" usage="opt">
                 <datatype>
-                  <rng:text/>
+                  <dataRef key="teidata.text"/>
                 </datatype>
               </attDef>
               <attDef ident="encoding" usage="opt">
                 <datatype>
-                  <rng:text/>
+                  <dataRef key="teidata.text"/>
                 </datatype>
               </attDef>
               <attDef ident="accept" usage="opt">
                 <datatype>
-                  <rng:text/>
+                  <dataRef key="teidata.text"/>
                 </datatype>
               </attDef>
               <attDef ident="accept-charset" usage="opt">
                 <datatype>
-                  <rng:text/>
+                  <dataRef key="teidata.text"/>
                 </datatype>
               </attDef>
               <attDef ident="accept-language" usage="opt">
                 <datatype>
-                  <rng:text/>
+                  <dataRef key="teidata.text"/>
                 </datatype>
               </attDef>
             </attList>
           </elementSpec>
-          <elementSpec xmlns:rng="http://relaxng.org/ns/structure/1.0" ident="fallback" ns="http://www.w3.org/2001/XInclude" mode="add">
-            <desc>Wrapper for fallback elements if an XInclude fails</desc>
+          <elementSpec ident="fallback" ns="http://www.w3.org/2001/XInclude" mode="add">
+            <desc xml:lang="en" versionDate="2014-01-12">Wrapper for fallback elements if an
+              XInclude fails</desc>
             <content>
-              <oneOrMore xmlns="http://relaxng.org/ns/structure/1.0">
-                <choice>
-                  <text/>
-                  <ref name="macro.anyThing"/>
-                </choice>
-              </oneOrMore>
+              <alternate>
+                <textNode/>
+                <anyElement/>
+              </alternate>
             </content>
           </elementSpec>
-          <macroSpec ident="macro.anyThing" mode="add">
-            <content><?NameList?></content>
-          </macroSpec>
-          -->
         </schemaSpec>
       </div>
     </body>
