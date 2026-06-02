@@ -392,6 +392,7 @@
                   <valItem ident="rubric"/>
                   <valItem ident="stacked"/>
                   <valItem ident="sup"/>
+                  <valItem ident="sub"/>
                 </valList>
               </attDef>
             </attList>
